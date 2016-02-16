@@ -2,10 +2,10 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class WC_Sistema {
+class Sistema {
 	
 	protected $CI;
-	public $tema = array();	//Carrega titulo, conteudo, modulos, etc...
+	public $theme = array();	//Carrega titulo, conteudo, modulos, etc...
 
 	//*** Contrutor ***
 	public function __construct(){

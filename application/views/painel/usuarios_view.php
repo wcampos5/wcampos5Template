@@ -2,8 +2,8 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-switch ($tela) {
-	case login:
+switch ($screen) {
+	case 'login':
 		echo 'Tela de login';
 	break;
 	
