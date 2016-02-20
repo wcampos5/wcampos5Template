@@ -4,7 +4,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 switch ($screen) {
 	case 'login':
-		echo 'Tela de login';
+		
+		echo '<div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 ">';
+			echo form_open('usuarios/login', array('class'=>'form-group login-form' ));
+				echo '<fieldset>';
+					echo '<legend>Identificação</legend>';
+						echo form_label('Usuário');
+						echo form_input(array('name'=>'username', 'class'=>'form-control', 'placeholder'=>'Usuario'), '', 'autofocus');
+						
+						echo form_label('Senha');
+						echo form_password(array('name'=>'password','class'=>'form-control', 'placeholder'=>'Senha'));
+						
+						echo form_submit(array('name'=>'login', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Entrar');
+						echo '<p>' . anchor('usuarios/nova_senha', 'Esqueci minha senha') . '<p>';
+						
+					echo '</fieldset>';
+			echo form_close();
+
+
+	
 	break;
 	
 	default:
