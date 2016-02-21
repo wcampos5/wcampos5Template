@@ -21,7 +21,15 @@ class Usuarios extends CI_Controller {
 	
 	} /* End of TBD */
 	
-	
+	/*---------------------------------------------------------------------------
+	 *										Function Login()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Recebe e valida os dados recebidos do formulário
+	 * - Chama o Model doLogin para verificar se usuario e senha coincide
+	 *  - Configura a sessão do usuário
+	 * 
+	 */
 	public function login() {
 		/* Valida os dados recebidos do formulario */
 		$this->form_validation->set_rules('email', 'USUÁRIO', 'trim|required|min_length[4]|strtolower');
@@ -54,12 +62,26 @@ class Usuarios extends CI_Controller {
 						
 				);
 				
+				$this->session->set_userdata($data);
 				
 				redirect('painel');
+				
 			//Login NOT OK
 			} else {
 				
-				echo 'login falhou!!!';
+				$query = $this->usuarios->getByEmail($email)->row();
+				
+				if (empty($query)){
+					setMessage('loginNotOK', 'Desculpe usuário e(ou) senha inválido(a). Tente novamente!'); //Usuario não existe
+				} elseif ($query->password != $password) {
+					setMessage('loginNotOK', 'Desculpe usuário e(ou) senha inválido(a). Tente novamente!'); //Senha invádlida
+				} elseif ($query->active == 0) {
+					setMessage('loginNotOK', 'Desculpe este usuario esta temporariamente inativo, contate o administrador.'); //Usuario inativo
+				} else {
+					setMessage('loginNotOK', 'Infelizmente ocorreu um erro desconhecido, contate o administrador!'); //Outros erros
+				}
+				
+				redirect('usuarios/login');
 			} // ./doLogin do Model Usuarios
 			
 		} // ./form_validation->run()
@@ -71,7 +93,33 @@ class Usuarios extends CI_Controller {
 		setTheme('conteudo', loadModule('usuarios_view', 'login')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
 		//Carrega o módulo usuários e mostrar a tela de login
 		loadTemplate();
-	}  /* End of login */
+	}  /* End of function login() */
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function logoff()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Limpa as variaveis de sistema
+	 * - Destroi a sessão
+	 *
+	 */
+	public function logoff() {
+		//Defini o array dos dados que faram parte do unset
+		$cleanSession = array('userId', 'email','name', 'userAdm', 'logged');
+		$this->session->unset_userdata($cleanSession);
+		
+		//Seta a mensagem
+		setMessage('logoffOK', 'Usuário desconectado com sucesso!', 'success');
+		redirect('usuarios/login');
+		
+		$this->session->sess_destroy();
+		
+	}  /* End of function logoff() */
+	
+	
+	
 		
 	
 } //End of Controller Usuarios

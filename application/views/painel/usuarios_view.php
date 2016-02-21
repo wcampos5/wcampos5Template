@@ -11,6 +11,10 @@ switch ($screen) {
 					echo '<legend>Identificação</legend>';
 						//Mostra erros de validação, caso exista
 						showFormErrors();
+						//Verifica se tem alguma mensagem flashdata setada
+						getMessage('logoffOK');
+						getMessage('loginNotOK');
+						
 					
 						echo form_label('Usuário');
 						echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>'Email'), '', 'autofocus');

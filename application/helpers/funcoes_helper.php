@@ -224,7 +224,7 @@ function isLogged($redir=TRUE) {
 		$_SESSION['logged'] = FALSE;
 		
 		if ($redir) {
-			redirect('usuarios/painel');
+			redirect('usuarios/login');
 		} else {
 			return FALSE;
 		}
@@ -233,6 +233,53 @@ function isLogged($redir=TRUE) {
 	}
 	
 }  /* End of isLogged */
+
+
+/*
+ * Defini uma mensagem de erro para a proxima requição
+ */
+function setMessage($msgId='errorMessage', $message=NULL, $msgType='error' ) {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	$CI->load->library('session'); //Carrega a library session;
+	
+	switch ($msgType) {
+		case 'error':
+			$CI->session->set_flashdata($msgId, '<div class="alert alert-danger"><p>' . $message . '</p></div>');
+		break;
+		
+		case 'success':
+			$CI->session->set_flashdata($msgId, '<div class="alert alert-success"><p>' . $message . '</p></div>');;
+			break;
+		
+		default:
+			$CI->session->set_flashdata($msgId, '<div class="alert alert-danger"><p>' . $message . '</p></div>');
+		break;
+	};
+}  /* End of function_container */
+
+
+/*
+ * Retorna uma mensagem de caso esteja setada e exibe na tela atual
+ */
+function getMessage($msgId, $print=TRUE) {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	$CI->load->library('session'); //Carrega a library session;
+	
+	//Verifica se a variavel esta setada
+	if ($CI->session->flashdata($msgId)){
+		//Verifica se é para imprimir a variavel ou retorna-la apenas
+		if ($print){
+			echo $CI->session->flashdata($msgId);
+			return TRUE;
+		} else {
+			return $CI->session->flashdata($msgId);
+		}
+	} else {
+		return FALSE;
+	}
+}  /* End of getMessage */
 
 
 
