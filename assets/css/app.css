@@ -9,3 +9,7 @@
 .btn-submit{
 	margin:10px;
 }
+
+.alert p{
+	margin: 0px !important;
+}

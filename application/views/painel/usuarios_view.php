@@ -9,13 +9,17 @@ switch ($screen) {
 			echo form_open('usuarios/login', array('class'=>'form-group login-form' ));
 				echo '<fieldset>';
 					echo '<legend>Identificação</legend>';
+						//Mostra erros de validação, caso exista
+						showFormErrors();
+					
 						echo form_label('Usuário');
-						echo form_input(array('name'=>'username', 'class'=>'form-control', 'placeholder'=>'Usuario'), '', 'autofocus');
+						echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>'Email'), '', 'autofocus');
 						
 						echo form_label('Senha');
 						echo form_password(array('name'=>'password','class'=>'form-control', 'placeholder'=>'Senha'));
 						
 						echo form_submit(array('name'=>'login', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Entrar');
+						//TODO: Melhorar espaçamento
 						echo '<p>' . anchor('usuarios/nova_senha', 'Esqueci minha senha') . '<p>';
 						
 					echo '</fieldset>';

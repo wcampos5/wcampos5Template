@@ -65,6 +65,7 @@ function initPanel() {
 	$CI->load->helper(array('form', 'url', 'array', 'text'));
 	
 	//Carregamento dos Model
+	$CI->load->model('usuarios_model', 'usuarios');
 	
 	//Configuração de propriedades padrão do Painel de Gerenciamento
 	//Inclui um arquivo CSS local
@@ -195,6 +196,18 @@ function loadJS($File=NULL, $folder='assets/js', $remote=FALSE) {
 	
 	return $strRetorno;
 }  /* End of loadJS() */
+
+
+/*
+ * Mostra erros de validação em formulários
+ */
+function showFormErrors() {
+	
+	if (validation_errors()) {
+		echo '<div class="alert alert-danger">' . validation_errors('<p>','</p>') . '</div>';
+	}
+	
+}  /* End of function_container */
 
 
 
