@@ -207,7 +207,32 @@ function showFormErrors() {
 		echo '<div class="alert alert-danger">' . validation_errors('<p>','</p>') . '</div>';
 	}
 	
-}  /* End of function_container */
+}  /* End of showFormErros */
+
+
+
+function isLogged($redir=TRUE) {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	$CI->load->library('session'); //Carrega a library session;
+	
+	//Lê a variavel de sessão looged
+	$userStatus = $CI->session->userdata('logged');
+	
+	if (!isset($userStatus) || $userStatus != TRUE){
+		//Defini o looged como falso
+		$_SESSION['logged'] = FALSE;
+		
+		if ($redir) {
+			redirect('usuarios/painel');
+		} else {
+			return FALSE;
+		}
+	} else {
+		return TRUE;
+	}
+	
+}  /* End of isLogged */
 
 
 

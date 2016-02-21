@@ -35,11 +35,30 @@ class Usuarios extends CI_Controller {
 			$password = md5($this->input->post('password', TRUE));
 			
 			/*Chama a função doLogin do Model Usuarios passando usuario e senha
-			 * caso o usuario exista e esteja ativo retorna TRUE
+			 * caso o usuario exista, senha seja correta e ele esteja ativo retorna TRUE
 			 */
+			
+			//Login OK
 			if ($this->usuarios->doLogin($email, $password) == TRUE){
-				echo 'login ok';
+				
+				//Extrai o os dados do usuario do BD e alimenta a sessão
+				$query = $this->usuarios->getByEmail($email)->row();	//Recebe os dados do usuario especifico
+				
+				//Array Dados com as variaveis de sessão
+				$data = array(
+						'userId' => $query->userId,
+						'email'	=> $query->email,
+						'name' => $query->name,
+						'userAdm' => $query->adm,
+						'logged' => TRUE
+						
+				);
+				
+				
+				redirect('painel');
+			//Login NOT OK
 			} else {
+				
 				echo 'login falhou!!!';
 			} // ./doLogin do Model Usuarios
 			

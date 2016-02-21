@@ -9,6 +9,7 @@ class Painel extends CI_Controller {
 	
 		parent::__construct();
 		$this->load->library('Sistema');
+		initPanel();
 		
 	} //End of Contruct
 	
@@ -20,7 +21,19 @@ class Painel extends CI_Controller {
 	}  /* End of index */
 	
 	public function inicio() {
-		redirect('usuarios/login');
+		
+		if (isLogged()){
+			//Defini os dados para serem exibidos em painel_view
+			setTheme('titulo', 'Inicio');
+			setTheme('conteudo', '<div class="col-sm-12 col-md-12 col-lg-12"><p>Escolha um menu para iniciar</p></div>');
+			
+			//Carrega o tema
+			loadTemplate();
+			
+		} else {
+			redirect('usuarios/login');
+		}
+		
 	}  /* End of inicio */
 	
 } 
