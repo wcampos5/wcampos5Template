@@ -32,7 +32,7 @@ class Usuarios extends CI_Controller {
 	 */
 	public function login() {
 		/* Valida os dados recebidos do formulario */
-		$this->form_validation->set_rules('email', 'USUÁRIO', 'trim|required|min_length[4]|strtolower');
+		$this->form_validation->set_rules('email', 'USUÁRIO', 'trim|required|valid_email|strtolower');
 		$this->form_validation->set_rules('password', 'SENHA', 'trim|required|min_length[4]|strtolower');
 		
 		//Se passar pela validação
@@ -117,6 +117,68 @@ class Usuarios extends CI_Controller {
 		$this->session->sess_destroy();
 		
 	}  /* End of function logoff() */
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function nava_senha()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Enviar nova senha ao usuario
+	 *
+	 */
+	public function nova_senha() {
+		/* Valida os dados recebidos do formulario */
+		$this->form_validation->set_rules('email', 'EMAIL', 'trim|required|valid_email|strtolower');
+		
+		//Se passar pela validação
+		if ($this->form_validation->run() == TRUE){
+			//Recupera o usuario através do email
+			$email = $this->input->post('email', TRUE);
+			//Pega o usuario no BD
+			$query = $this->usuarios->getByEmail($email);
+			
+			//Verifica se retornou 1 registro
+			if ($query->num_rows() == 1){
+				
+				//Defini uma nova senha randomica com 6 digitos
+				$newPassword = substr(str_shuffle('qwertyuiopasdfghjklzxcvbnm0123456789'), 0, 6);
+				//Gera a mensagem para o usuário
+				$mensagem = "<p>Você solicitou uma nova senha, sua nova senha é: " . " <strong>$newPassword</strong> </p>
+				<p>Troque esta senha para ma senha de sua preferência.</p>";
+				
+				//Envia a mensagem
+				if ($this->sistema->sendEmail($email, 'Nova senha de acesso', $mensagem )){
+					$data['password'] = md5($newPassword);
+					//Atualiza o banco de dados com a nova senha
+					$this->usuarios->doUpdate($data, array('email'=>$email), FALSE);
+					//Defini a mensagem de retorno para o usuario
+					setMessage('msgOK', 'Nova senha enviada ao seu email', 'success');
+					redirect('usuarios/nova_senha');
+				
+				} else {
+					//Defini a mensagem de retorno para o usuario
+					setMessage('msgError', 'Erro ao enviar nova senha', 'error');
+					redirect('usuarios/nova_senha');				
+				}
+			} else {
+				//Defini a mensagem de retorno para o usuario
+				setMessage('msgError', 'Email inválido', 'error');
+				redirect('usuarios/nova_senha');
+			
+			}
+			
+			
+		} // ./form_validation->run()
+		
+		
+		
+		
+		setTheme('titulo', 'Recuperar Senha'); //Define o titulo da página em painel_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'nova_senha')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+		
+	}  /* End of function nova_senha() */
 	
 	
 	

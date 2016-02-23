@@ -18,6 +18,20 @@ class Usuarios_model extends CI_Model {
 	 *										Functions
 	 ---------------------------------------------------------------------------*/
 	
+	public function doUpdate($data=NULL, $condition=NULL, $redir=TRUE) {
+		if ($data != NULL && is_array($condition)) {
+			//Atualiza a tabela usuarios no BD
+			$this->db->update('users', $data, $condition);
+			//Seta a msg de sucesso
+			setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
+			if ($redir){
+				//Atualiza a pagina corrente
+				redirect(current_url());
+			}
+		}
+		
+	}  /* End of function doUpdate() */
+	
 	/**
 	 * Function doLogin()
 	 * 

@@ -17,6 +17,29 @@ class Sistema {
 	
 	
 	
+	public function sendEmail($to, $subject, $message, $format='html') {
+		$this->CI->load->library('email');
+		
+		$config['mailtype'] = $format;
+		
+		$this->CI->email->initialize($config);
+		
+		$this->CI->email->from('adm@site.com', 'Administração do Site');
+		$this->CI->email->to($to);
+		$this->CI->email->subject($subject);
+		$this->CI->email->message($message);
+		
+		//Verifica se foi enviado com sucesso
+		if ($this->CI->email->send()){
+			return TRUE;
+		} else {
+			return $this->CI->email->print_debugger();
+		}
+		
+	}  /* End of End of sendEmail() */
+	
+	
+	
 	
 } 
 

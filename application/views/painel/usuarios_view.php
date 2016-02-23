@@ -17,7 +17,7 @@ switch ($screen) {
 						
 					
 						echo form_label('Usuário');
-						echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>'Email'), '', 'autofocus');
+						echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>'Email@site.com.br'), '', 'autofocus');
 						
 						echo form_label('Senha');
 						echo form_password(array('name'=>'password','class'=>'form-control', 'placeholder'=>'Senha'));
@@ -32,6 +32,33 @@ switch ($screen) {
 
 	
 	break;
+	
+	case 'nova_senha':
+	
+		echo '<div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 ">';
+		echo form_open('usuarios/nova_senha', array('class'=>'form-group login-form' ));
+		echo '<fieldset>';
+		echo '<legend>Recuperação de Senha</legend>';
+		//Mostra erros de validação, caso exista
+		showFormErrors();
+		//Verifica se tem alguma mensagem flashdata setada
+		getMessage('msgOK');
+		getMessage('msgError');
+	
+			
+		echo form_label('Email');
+		echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>'Email@site.com.br'), '', 'autofocus');
+	
+		echo form_submit(array('name'=>'newPassword', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Re-definir Senha');
+		//TODO: Melhorar espaçamento
+		echo '<p>' . anchor('usuarios/login', 'Acessar o site') . '<p>';
+	
+		echo '</fieldset>';
+		echo form_close();
+	
+	
+	
+		break;
 	
 	default:
 		echo '<div class="alert alert-danger"><p>Tela Inexistente</p></div>';

@@ -109,7 +109,7 @@ function loadTemplate() {
 
 
 /**
- * TODO:Avaliar deleção, funcão unificadas em LoadCSSJS() logo abaixo
+ *
  * Carrega os arquivos CSS locais e remotos
  * 
  * @param string $cssFile
