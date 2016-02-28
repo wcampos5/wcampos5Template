@@ -18,6 +18,21 @@ class Usuarios_model extends CI_Model {
 	 *										Functions
 	 ---------------------------------------------------------------------------*/
 	
+	public function doInsert($data=NULL, $redir=TRUE) {
+		if ($data != NULL) {
+			$this->db->insert('users', $data);
+			//Envia mensagem de sucesso
+			setMessage('msgOK', 'Cadastro efetuado com sucesso!!!', 'success');
+			
+			if ($redir){
+				//Atualiza a pagina corrente
+				redirect(current_url());
+			}
+			
+		} // ./End of has $data
+	
+	}  /* End of function doUpdate() */
+	
 	public function doUpdate($data=NULL, $condition=NULL, $redir=TRUE) {
 		if ($data != NULL && is_array($condition)) {
 			//Atualiza a tabela usuarios no BD

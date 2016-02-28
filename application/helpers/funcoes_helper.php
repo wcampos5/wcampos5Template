@@ -224,6 +224,8 @@ function isLogged($redir=TRUE) {
 		$_SESSION['logged'] = FALSE;
 		
 		if ($redir) {
+			//Informa o motivo do redirecionamento
+			setMessage('loginNotOK', 'Acesso RESTRITO, favor efetuar o login', 'error');
 			redirect('usuarios/login');
 		} else {
 			return FALSE;
@@ -233,6 +235,28 @@ function isLogged($redir=TRUE) {
 	}
 	
 }  /* End of isLogged */
+
+function isAdmin($sendMessage=FALSE) {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	
+	//recebe o usuario da sessão
+	$userAdmin = $CI->session->userdata('userAdm');
+	
+	//Verifica se o usuario não esta instanciado ou não é administrador
+	if (!isset($userAdmin) || $userAdmin != TRUE){
+		//Verifica se é para retornar mensagem
+		if ($sendMessage) {
+			setMessage('msgError', 'Operação não permitida para este usuário', 'error');
+			return FALSE;
+		}
+	
+	} else {
+		
+		return TRUE;
+	
+	}
+}  /* End of function isAdmin */
 
 
 /*

@@ -29,7 +29,7 @@
 					
 					<div class="col-lg-4">
 						<p class="pull-right">
-							Bem vindo <strong><?php $this->session->userdata('name'); ?></strong>!
+							Bem vindo <strong><?php echo $this->session->userdata('name'); ?></strong>!
 						</p>
 						
 						<p class="pull-right">
