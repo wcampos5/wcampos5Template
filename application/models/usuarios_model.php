@@ -96,6 +96,16 @@ class Usuarios_model extends CI_Model {
 		}
 	}  /* End of getByEmail() */
 	
+	/**
+	 * Function getAll()
+	 *
+	 * Retorna todos os dados da tabela users
+	 * 
+	 */
+	public function getAll() {
+		return $this->db->get('users');
+	}  /* End of function_getAll() */
+	
 } 
 
 /*   End of file usuarios_model.php  */

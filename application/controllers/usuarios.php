@@ -194,7 +194,7 @@ class Usuarios extends CI_Controller {
 	public function cadastrar() {
 		
 		//Verifica se está logado
-		isLogged();
+		isLogged();	
 		
 		//Customiza as mensagens dos campos dos formularios
 		$this->form_validation->set_message('is_unique', 'Este %s já esta cadastrado no sistema');
@@ -231,6 +231,33 @@ class Usuarios extends CI_Controller {
 		//Carrega o módulo usuários e mostrar a tela de login
 		loadTemplate();
 	}  /* End of Function cadastrar() */
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function gerenciar()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Listagem de usuarios usando JQuery Data Tables
+	 *
+	 */
+	public function gerenciar() {
+		
+		//Verifica se esta logado
+		isLogged();
+		
+		$this->load->helper('html');
+		
+		//Carrega o data-table.js e o tabel.js
+		setTheme('jsInclude', loadJS('table.js', 'assets/js', FALSE),FALSE);
+		
+		
+		
+		setTheme('titulo', 'Gerenciamento de usuários'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'gerenciar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+		
+	}  /* End of function_gerenciar */
 	
 	
 	

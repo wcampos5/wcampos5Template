@@ -13,3 +13,13 @@
 .alert p{
 	margin: 0px !important;
 }
+
+/* Tabelas */
+
+th.sorting_asc{
+	background: url("assets/images/black_up.png") right center no-repeat !important;
+}
+
+th.sorting_desc{
+	background: url("assets/images/black_down.png") right center no-repeat !important;
+}

@@ -92,6 +92,48 @@ switch ($screen) {
 		echo form_close();
 		
 		break;
+		
+	case 'gerenciar':
+?>
+		<div class="col-sm-12 col-md-12 col-lg-12 ">
+			<table class="table table-striped data-table">
+			  
+			  <thead>
+			  	<tr>
+			  		<th>Nome</th>
+			  		<th>Email</th>
+			  		<th>Ativo | Admin</th>
+			  		<th class="text-center">Ações</th>
+			  	</tr>
+			  </thead>
+			  
+			  <tbody>
+<?php 
+				$query = $this->usuarios->getAll()->result(); //Trás os dados da tabela
+				
+				foreach ($query as $item){
+					echo '<tr>';
+						printf('<td>%s</td>', $item->name);
+						printf('<td>%s</td>', $item->email);
+						printf('<td>%s | %s</td>', ($item->active==0) ? 'Não' : 'Sim', ($item->adm==0) ? 'Não' : 'Sim');
+						printf('<td class="text-center">%s%s%s</td>', anchor("usuarios/editar/$item->userId", ' ', array('class'=>'glyphicon glyphicon-edit', 'title'=>'Editar')) . nbs(4),
+								anchor("usuarios/alterar_senha/$item->userId", ' ', array('class'=>'glyphicon glyphicon-lock', 'title'=>'Trocar Senha')). nbs(8),
+								anchor("usuarios/excluir/$item->userId", ' ', array('class'=>'glyphicon glyphicon-trash', 'title'=>'Deletar')));
+					echo '</tr>';
+				} // ./foreach $query
+				
+				
+?>
+			  
+			  </tbody>
+			  
+			</table>
+		
+		</div>
+
+<?php 
+		
+		break;
 	
 	default:
 		echo '<div class="alert alert-danger"><p>Tela Inexistente</p></div>';
