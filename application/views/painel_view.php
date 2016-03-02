@@ -35,7 +35,7 @@
 						<p class="pull-right">
 							<?php
 							//Altercao de senha
-							echo anchor('usuarios/nova_senha/' . $this->session->userdata('userId'), 'Alterar Senha', 'class="btn btn-primary"'); 
+							echo anchor('usuarios/alterar_senha/' . $this->session->userdata('userId'), 'Alterar Senha', 'class="btn btn-primary"'); 
 							//Logoff
 							echo anchor('usuarios/logoff', 'Sair', 'class="btn btn-danger"');
 							?>

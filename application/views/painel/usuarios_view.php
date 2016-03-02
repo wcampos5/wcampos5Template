@@ -96,6 +96,10 @@ switch ($screen) {
 	case 'gerenciar':
 ?>
 		<div class="col-sm-12 col-md-12 col-lg-12 ">
+		<?php 
+			getMessage('msgOK');
+			getMessage('msgError');
+		?>
 			<table class="table table-striped data-table">
 			  
 			  <thead>
@@ -126,14 +130,66 @@ switch ($screen) {
 ?>
 			  
 			  </tbody>
-			  
 			</table>
-		
 		</div>
 
 <?php 
+	break;
+	
 		
-		break;
+	case 'alterar_senha':
+		
+		$userIdSegment = $this->uri->segment(3);
+		
+		//Verifica se existe um usuario para trocar a senha
+		if ($userIdSegment == NULL) {
+			setMessage('msgError', 'Selecione um usuário para modificar', 'error');
+			redirect('usuarios/gerenciar');
+		} // ./End of $userIdSegment == NULL
+?>
+		<div class="col-sm-12 col-md-12 col-lg-12 ">
+<?php	
+		
+		//Verifica se é Administrador ou o próprio usuario
+		if ($userIdSegment == $this->session->userdata('userId') || isadmin(TRUE)) {
+			$query = $this->usuarios->getByUserId($userIdSegment)->row();
+		} else {
+			redirect('usuarios/gerenciar');
+		}// ./Enf of isadmin() || $userIdSegment == $this->session->userdata('userId')
+		
+		//
+		echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
+		echo form_open(current_url(), array('class'=>'form-group login-form'));
+		echo '<fieldset>';
+		echo '<legend>Alterar Senha</legend>';
+		//Mostra erros de validação, caso exista
+		showFormErrors();
+		//Verifica se tem alguma mensagem flashdata setada
+		getMessage('msgOK');
+		getMessage('msgError');
+		
+		
+		echo form_label('Nome Completo');
+		echo form_input(array('name'=>'name', 'class'=>'form-control', 'placeholder'=>$query->name, 'disabled'=>'disabled'), '');
+		echo form_label('Email');
+		echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>$query->email, 'disabled'=>'disabled'));
+		echo form_label('Nova Senha');
+		echo form_password(array('name'=>'password', 'class'=>'form-control', 'placeholder'=>'Digite sua senha'),'autofocus');
+		echo form_label('Redigite a senha');
+		echo form_password(array('name'=>'password_repeat', 'class'=>'form-control', 'placeholder'=>'Re-digite sua senha'));
+	
+		echo form_submit(array('name'=>'changePassword', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Alterar Senha');
+		echo anchor('usuarios/gerenciar', 'Cancelar', array('class'=>'btn btn-md btn-danger'));
+		echo form_hidden('userId', $userIdSegment);
+		
+		echo '</fieldset>';
+		echo form_close();
+		
+		echo '</div>';
+	
+			
+		
+	break;
 	
 	default:
 		echo '<div class="alert alert-danger"><p>Tela Inexistente</p></div>';

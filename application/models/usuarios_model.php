@@ -96,6 +96,25 @@ class Usuarios_model extends CI_Model {
 		}
 	}  /* End of getByEmail() */
 	
+	
+	
+	public function getByUserId($id=NULL) {
+		if ($id != NULL){
+			/* Defini a clausila where */
+			$this->db->where('userId', $id);
+			$this->db->limit(1);
+				
+			return $this->db->get('users');
+				
+	
+		} else {
+			return FALSE;
+		}
+	}  /* End of getByUserId() */
+	
+	
+	
+	
 	/**
 	 * Function getAll()
 	 *

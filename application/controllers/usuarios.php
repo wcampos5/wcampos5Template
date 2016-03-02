@@ -261,6 +261,42 @@ class Usuarios extends CI_Controller {
 	
 	
 	
+	/*---------------------------------------------------------------------------
+	 *									Function alterar_senha()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Altera a senha do usuario
+	 *
+	 */
+	public function alterar_senha() {
+	
+		//Verifica se esta logado
+		isLogged();
+		
+		//Valida form
+		$this->form_validation->set_rules('password', 'SENHA', 'trim|required|min_length[4]|strtolower');
+		$this->form_validation->set_rules('password_repeat', 'REPITA A SENHA', 'trim|required|min_length[4]|strtolower|matches[password]');
+		
+		if ($this->form_validation->run() == TRUE) {
+			//Recebe a senha
+			$data['password'] = md5($this->input->post('password'));
+			
+			//Altera a senha no BD
+			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')));
+		}
+		
+	
+	
+	
+		setTheme('titulo', 'Alterar Senha'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'alterar_senha')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+	
+	}  /* End of function_gerenciar */
+	
+	
+	
 	
 	
 	
