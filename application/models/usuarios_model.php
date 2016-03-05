@@ -47,6 +47,23 @@ class Usuarios_model extends CI_Model {
 		
 	}  /* End of function doUpdate() */
 	
+	
+	public function doDelete($condition=NULL, $redir=TRUE) {
+		echo var_dump($condition);
+		if ($condition != NULL && is_array($condition)) {
+			//Executa a deleção
+			$this->db->delete('users', $condition);
+			setMessage('msgError', "Usuário " . $condition['userId'] . " excluido com sucesso!!!", 'success');
+			
+			if ($redir) {
+				redirect(current_url());
+			} // ./End of redir=TRUE
+			
+		} // ./End of condition exists and is an array
+	}  /* End of function doDelete() */
+	
+	
+	
 	/**
 	 * Function doLogin()
 	 * 

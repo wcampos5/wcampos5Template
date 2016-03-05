@@ -95,6 +95,14 @@ switch ($screen) {
 		
 	case 'gerenciar':
 ?>
+		<script type="text/javascript">
+			$(function(){
+				$('.confirmadelecao').click(function(){
+					if (confirm("Deseja realmente excluir este registro?\nEsta operação não poderá ser desfeita!!!")) return true; else 
+						return false;
+				});
+			});
+		</script>
 		<div class="col-sm-12 col-md-12 col-lg-12 ">
 		<?php 
 			getMessage('msgOK');
@@ -122,7 +130,7 @@ switch ($screen) {
 						printf('<td>%s | %s</td>', ($item->active==0) ? 'Não' : 'Sim', ($item->adm==0) ? 'Não' : 'Sim');
 						printf('<td class="text-center">%s%s%s</td>', anchor("usuarios/editar/$item->userId", ' ', array('class'=>'glyphicon glyphicon-edit', 'title'=>'Editar')) . nbs(4),
 								anchor("usuarios/alterar_senha/$item->userId", ' ', array('class'=>'glyphicon glyphicon-lock', 'title'=>'Trocar Senha')). nbs(8),
-								anchor("usuarios/excluir/$item->userId", ' ', array('class'=>'glyphicon glyphicon-trash', 'title'=>'Deletar')));
+								anchor("usuarios/excluir/$item->userId", ' ', array('class'=>'confirmadelecao glyphicon glyphicon-trash', 'title'=>'Deletar')));
 					echo '</tr>';
 				} // ./foreach $query
 				

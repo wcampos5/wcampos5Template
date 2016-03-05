@@ -340,6 +340,64 @@ class Usuarios extends CI_Controller {
 	
 	
 	
+	/*---------------------------------------------------------------------------
+	 *									Function excluir()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Permite a exclusão de um usuario
+	 *
+	 */
+	public function excluir() {
+	
+		//Verifica se esta logado
+		isLogged();
+	
+		//Verifica se é administrador
+		if (isAdmin(TRUE)){
+			
+			//Recebe o userId no 3o segmento da URI
+			$userIdSegment = $this->uri->segment(3);
+			
+			//Caso o 3o segmento exista
+			if ($userIdSegment != NULL){
+				
+				//Retorna a linha correspondente do banco de dados
+				$query = $this->usuarios->getByUserId($userIdSegment);
+				
+				//Se retornar uma linha
+				if ($query->num_rows() == 1){
+					
+					$query->row();
+					
+					
+					//Verifica se o usuario em questão não é um administrador
+					if ($query->adm != '1'){
+						//Executa a deleção
+						$this->usuarios->doDelete(array('userId'=>$query->userId), FALSE);
+					//Caso não $query->adm != '1'
+					} else {
+						setMessage('msgError', 'Usuário não pode ser excluido!!!', 'error');
+					} // ./End of $query->adm != '1'
+					
+				//Caso não $query->num_rows() <> 1
+				} else {
+					setMessage('msgError', 'Usuário Inexisente', 'error');
+				} // ./End of $query->num_rows() == 1
+				
+			//Caso $userIdSegment == NULL
+			} else {
+				setMessage('msgError', 'Selecione um usuário para deletar', 'error');
+			
+			} // ./End of $userIdSegment != NULL
+			
+			redirect('usuarios/gerenciar');
+			
+		} // ./End of isAdmin(TRUE)
+	
+	}  /* End of function editar */
+	
+	
+	
 	
 	
 	
