@@ -174,7 +174,7 @@ switch ($screen) {
 		echo form_label('Email');
 		echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>$query->email, 'disabled'=>'disabled'));
 		echo form_label('Nova Senha');
-		echo form_password(array('name'=>'password', 'class'=>'form-control', 'placeholder'=>'Digite sua senha'),'autofocus');
+		echo form_password(array('name'=>'password', 'class'=>'form-control', 'placeholder'=>'Digite sua senha'),'', 'autofocus');
 		echo form_label('Redigite a senha');
 		echo form_password(array('name'=>'password_repeat', 'class'=>'form-control', 'placeholder'=>'Re-digite sua senha'));
 	
@@ -190,6 +190,61 @@ switch ($screen) {
 			
 		
 	break;
+	
+	
+	
+	case 'editar':
+	
+		$userIdSegment = $this->uri->segment(3);
+	
+		//Verifica se existe um usuario para trocar a senha
+		if ($userIdSegment == NULL) {
+			setMessage('msgError', 'Selecione um usuário para modificar', 'error');
+			redirect('usuarios/gerenciar');
+		} // ./End of $userIdSegment == NULL
+		?>
+			<div class="col-sm-12 col-md-12 col-lg-12 ">
+	<?php	
+			
+			//Verifica se é Administrador ou o próprio usuario
+			if ($userIdSegment == $this->session->userdata('userId') || isadmin()) {
+				$query = $this->usuarios->getByUserId($userIdSegment)->row();
+			} else {
+				setMessage('msgError', 'Operação não permitida para este usuário', 'error');
+				redirect('usuarios/gerenciar');
+			}// ./Enf of isadmin() || $userIdSegment == $this->session->userdata('userId')
+			
+			//
+			echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
+			echo form_open('usuarios/gerenciar', array('class'=>'form-group login-form'));
+			echo '<fieldset>';
+			echo '<legend>Alterar Usuário</legend>';
+			//Mostra erros de validação, caso exista
+			showFormErrors();
+			//Verifica se tem alguma mensagem flashdata setada
+			getMessage('msgOK');
+			getMessage('msgError');
+			
+			
+			echo form_label('Nome Completo');
+			echo form_input(array('name'=>'name', 'class'=>'form-control'),set_value('name', $query->name), 'autofocus');
+			echo form_label('Email');
+			echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>$query->email, 'disabled'=>'disabled'));
+			echo form_checkbox(array('name'=>'active'),'1', ($query->active == 1)? 1 : 0) . ' Ativo?'. str_repeat('<br>', 2);
+			echo form_checkbox(array('name'=>'adm'),'1', ($query->adm == 1)? 1 : 0) . ' Administrator?'. str_repeat('<br>', 2);
+		
+			echo form_submit(array('name'=>'editUser', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Editar Usuário');
+			echo anchor('usuarios/gerenciar', 'Cancelar | Voltar', array('class'=>'btn btn-md btn-danger'));
+			echo form_hidden('userId', $userIdSegment);
+			
+			echo '</fieldset>';
+			echo form_close();
+			
+			echo '</div>';
+		
+				
+			
+		break;
 	
 	default:
 		echo '<div class="alert alert-danger"><p>Tela Inexistente</p></div>';

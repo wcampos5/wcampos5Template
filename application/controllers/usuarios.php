@@ -75,7 +75,7 @@ class Usuarios extends CI_Controller {
 					setMessage('loginNotOK', 'Desculpe usuário e(ou) senha inválido(a). Tente novamente!'); //Usuario não existe
 				} elseif ($query->password != $password) {
 					setMessage('loginNotOK', 'Desculpe usuário e(ou) senha inválido(a). Tente novamente!'); //Senha invádlida
-				} elseif ($query->active == 0) {
+				} elseif ($query->active == FALSE) {
 					setMessage('loginNotOK', 'Desculpe este usuario esta temporariamente inativo, contate o administrador.'); //Usuario inativo
 				} else {
 					setMessage('loginNotOK', 'Infelizmente ocorreu um erro desconhecido, contate o administrador!'); //Outros erros
@@ -274,6 +274,8 @@ class Usuarios extends CI_Controller {
 		isLogged();
 		
 		//Valida form
+		$this->form_validation->set_message('matches', 'O campo %s está diferente do campos %s');
+		
 		$this->form_validation->set_rules('password', 'SENHA', 'trim|required|min_length[4]|strtolower');
 		$this->form_validation->set_rules('password_repeat', 'REPITA A SENHA', 'trim|required|min_length[4]|strtolower|matches[password]');
 		
@@ -284,16 +286,57 @@ class Usuarios extends CI_Controller {
 			//Altera a senha no BD
 			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')));
 		}
-		
-	
-	
 	
 		setTheme('titulo', 'Alterar Senha'); //Define o titulo da página em usuarios_view()
 		setTheme('conteudo', loadModule('usuarios_view', 'alterar_senha')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
 		//Carrega o módulo usuários e mostrar a tela de login
 		loadTemplate();
 	
-	}  /* End of function_gerenciar */
+	}  /* End of function alterar_senha */
+	
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function editar()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Permite a edição de alguns dados do usuario
+	 *
+	 */
+	public function editar() {
+	
+		//Verifica se esta logado
+		isLogged();
+		
+		/* Valida os dados recebidos do formulario */
+		$this->form_validation->set_rules('name', 'NOME', 'trim|required|ucwords');
+		
+		//Se passar pela validação
+		if ($this->form_validation->run() == TRUE) {
+			//O nome
+			$data['name'] = $this->input->post('name', TRUE);
+			
+			//Somente um administrador pode criar outro ou Inativar um usuario
+			if (isAdmin(TRUE)){
+				$data['active'] = ($this->input->post('active') == 1) ? 1 : 0;
+			}
+			
+			if (isAdmin(TRUE)){
+				$data['adm'] = ($this->input->post('adm') == 1) ? 1 : 0;
+			}
+			
+			//Altera a senha no BD
+			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')));
+		}
+		
+	
+		setTheme('titulo', 'Atualização de Usuario'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'editar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+	
+	}  /* End of function editar */
 	
 	
 	
