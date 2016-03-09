@@ -224,7 +224,7 @@ switch ($screen) {
 			
 			//
 			echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
-			echo form_open('usuarios/gerenciar', array('class'=>'form-group login-form'));
+			echo form_open(current_url(), array('class'=>'form-group login-form'));
 			echo '<fieldset>';
 			echo '<legend>Alterar Usuário</legend>';
 			//Mostra erros de validação, caso exista
@@ -239,7 +239,7 @@ switch ($screen) {
 			echo form_label('Email');
 			echo form_input(array('name'=>'email', 'class'=>'form-control', 'placeholder'=>$query->email, 'disabled'=>'disabled'));
 			echo form_checkbox(array('name'=>'active'),'1', ($query->active == 1)? 1 : 0) . ' Ativo?'. str_repeat('<br>', 2);
-			echo form_checkbox(array('name'=>'adm'),'1', ($query->adm == 1)? 1 : 0) . ' Administrator?'. str_repeat('<br>', 2);
+			echo form_checkbox(array('name'=>'adm'), '1', ($query->adm == 1)? 1 : 0) . ' Administrator?'. str_repeat('<br>', 2);
 		
 			echo form_submit(array('name'=>'editUser', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Editar Usuário');
 			echo anchor('usuarios/gerenciar', 'Cancelar | Voltar', array('class'=>'btn btn-md btn-danger'));

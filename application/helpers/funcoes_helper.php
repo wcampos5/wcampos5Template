@@ -78,9 +78,9 @@ function initPanel() {
 	//Inclui os JS remotos
 	setTheme('jsInclude', loadJS(array('https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js',
 			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
-			'//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js',
-			'//cdn.tinymce.com/4/tinymce.min.js'
-	),'',TRUE), FALSE);
+			'//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js'
+	),'',TRUE), FALSE);  /*Voltar ,
+			'//cdn.tinymce.com/4/tinymce.min.js' */
 	
 	setTheme('defaultTitle', 'Painel Administrativo');
 	setTheme('footer', '<p>XXX &copy; 2016 | Todos os direitos reservados.</p>');

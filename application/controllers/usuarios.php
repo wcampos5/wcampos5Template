@@ -318,16 +318,17 @@ class Usuarios extends CI_Controller {
 			$data['name'] = $this->input->post('name', TRUE);
 			
 			//Somente um administrador pode criar outro ou Inativar um usuario
-			if (isAdmin(TRUE)){
+			if (isAdmin(TRUE) == TRUE){
 				$data['active'] = ($this->input->post('active') == 1) ? 1 : 0;
 			}
 			
-			if (isAdmin(TRUE)){
+			if (isAdmin(TRUE) == TRUE){
 				$data['adm'] = ($this->input->post('adm') == 1) ? 1 : 0;
 			}
 			
+			
 			//Altera a senha no BD
-			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')));
+			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')), TRUE);
 		}
 		
 	
@@ -353,7 +354,7 @@ class Usuarios extends CI_Controller {
 		isLogged();
 	
 		//Verifica se é administrador
-		if (isAdmin(TRUE)){
+		if (isAdmin(TRUE) == TRUE){
 			
 			//Recebe o userId no 3o segmento da URI
 			$userIdSegment = $this->uri->segment(3);
@@ -367,13 +368,13 @@ class Usuarios extends CI_Controller {
 				//Se retornar uma linha
 				if ($query->num_rows() == 1){
 					
-					$query->row();
+					$query = $query->row();
 					
 					
 					//Verifica se o usuario em questão não é um administrador
 					if ($query->adm != '1'){
 						//Executa a deleção
-						$this->usuarios->doDelete(array('userId'=>$query->userId), FALSE);
+						$this->usuarios->doDelete(array('userId'=>$userIdSegment), FALSE);
 					//Caso não $query->adm != '1'
 					} else {
 						setMessage('msgError', 'Usuário não pode ser excluido!!!', 'error');
@@ -392,7 +393,9 @@ class Usuarios extends CI_Controller {
 			
 			redirect('usuarios/gerenciar');
 			
-		} // ./End of isAdmin(TRUE)
+		} else {
+			redirect('usuarios/gerenciar');
+		}// ./End of isAdmin(TRUE)
 	
 	}  /* End of function editar */
 	

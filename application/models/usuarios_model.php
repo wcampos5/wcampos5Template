@@ -21,8 +21,17 @@ class Usuarios_model extends CI_Model {
 	public function doInsert($data=NULL, $redir=TRUE) {
 		if ($data != NULL) {
 			$this->db->insert('users', $data);
-			//Envia mensagem de sucesso
-			setMessage('msgOK', 'Cadastro efetuado com sucesso!!!', 'success');
+			
+			//Verifica se realmente incluiu
+			if ($this->db->affected_rows() > 0){
+				//Envia mensagem de sucesso
+				setMessage('msgOK', 'Cadastro efetuado com sucesso!!!', 'success');
+			//Caso não $this->db->affected_rows() > 0
+			} else {
+				//Envia mensagem de erro
+				setMessage('msgError', 'Cadastro naõ efetuado!!!', 'error');
+			} // ./End of $this->db->affected_rows() > 0
+			
 			
 			if ($redir){
 				//Atualiza a pagina corrente
@@ -37,8 +46,16 @@ class Usuarios_model extends CI_Model {
 		if ($data != NULL && is_array($condition)) {
 			//Atualiza a tabela usuarios no BD
 			$this->db->update('users', $data, $condition);
+			
+			//Verifica se atualizou registro
+			if ($this->db->afected_rows() > 0){
+				setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
+			//Caso não $this->db->afected_rows() > 0
+			} else {
+				setMessage('msgError', 'Erro ao tentar atualizar o registro', 'error');
+			} // ./End of $this->db->afected_rows() > 0
 			//Seta a msg de sucesso
-			setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
+			setMessage('msgOK', 'Atualização efetuada com sucesso' . var_dump($data), 'success');
 			if ($redir){
 				//Atualiza a pagina corrente
 				redirect(current_url());
@@ -49,11 +66,18 @@ class Usuarios_model extends CI_Model {
 	
 	
 	public function doDelete($condition=NULL, $redir=TRUE) {
-		echo var_dump($condition);
 		if ($condition != NULL && is_array($condition)) {
 			//Executa a deleção
 			$this->db->delete('users', $condition);
-			setMessage('msgError', "Usuário " . $condition['userId'] . " excluido com sucesso!!!", 'success');
+			
+			//Verifica se realmente excluiu
+			if ($this->db->affected_rows() > 0){
+				setMessage('msgOK', "Registro excluido com sucesso!!!", 'success');
+			//Caso $this->db->affected_rows() <> 1
+			} else {
+				setMessage('msgError', "Registro não pode ser excluido!!!", 'error');
+			} // ./End of $this->db->affected_rows() == 1
+			
 			
 			if ($redir) {
 				redirect(current_url());
