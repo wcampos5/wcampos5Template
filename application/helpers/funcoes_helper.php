@@ -224,6 +224,8 @@ function isLogged($redir=TRUE) {
 		$_SESSION['logged'] = FALSE;
 		
 		if ($redir) {
+			//Verifica de onde veio a solicitação
+			$CI->session->set_userdata(array('redirTo'=>current_url()));
 			//Informa o motivo do redirecionamento
 			setMessage('loginNotOK', 'Acesso RESTRITO, favor efetuar o login', 'error');
 			redirect('usuarios/login');
@@ -304,6 +306,41 @@ function getMessage($msgId, $print=TRUE) {
 		return FALSE;
 	}
 }  /* End of getMessage */
+
+
+/*
+ * Gera um breadcrumb baseado no Controller atual
+ */
+function breadcrumb() {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	$CI->load->helper('url'); //Carrega o helper url;
+	
+	//Recebe a classe (Controller) atual
+	$currentClass = ucfirst($CI->router->class); //Informa qual é a class atualemnte rodando no sistema
+	
+	if ($currentClass == 'Painel'){
+		$currentClass = anchor($CI->router->class, 'Inicio');
+	//Caso não condition
+	} else {
+		$currentClass = anchor($CI->router->class, $currentClass);
+	} // ./End of condition
+	
+	
+	//Recebe o metodo em questão
+	$currentMethod = ucwords(str_replace('_', ' ', $CI->router->method));
+	
+	if ($currentMethod && $currentMethod != 'Index'){
+		$currentMethod = " &raquo; " . anchor($CI->router->class . "/" . $CI->router->method, $currentMethod);
+	//Caso não $currentMethod && $currentMethod != 'Index'
+	} else {
+		$currentMethod = '';
+	} // ./End of $currentMethod && $currentMethod != 'Index'
+	
+	return '<p>Sua localização:' . anchor('painel', 'Painel') . ' &raquo ' . $currentClass . $currentMethod . '</p>';
+	
+	
+}  /* End of function breadcrumb */
 
 
 

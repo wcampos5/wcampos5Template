@@ -17,7 +17,7 @@ class Usuarios extends CI_Controller {
 	//*** FUNCTIONS ***
 	
 	function index() {
-		$this->load->view('TBD');
+		$this->gerenciar();
 	
 	} /* End of TBD */
 	
@@ -42,6 +42,8 @@ class Usuarios extends CI_Controller {
 			//Recebe e converte para MD5SUM
 			$password = md5($this->input->post('password', TRUE));
 			
+			$redirTo = $this->input->post('redirTo', TRUE);
+			
 			/*Chama a função doLogin do Model Usuarios passando usuario e senha
 			 * caso o usuario exista, senha seja correta e ele esteja ativo retorna TRUE
 			 */
@@ -64,7 +66,14 @@ class Usuarios extends CI_Controller {
 				
 				$this->session->set_userdata($data);
 				
-				redirect('painel');
+				//Verifica se necessita redirecionar ou não
+				if ($redirTo != ''){
+					redirect($redirTo);
+				//Caso $redirTo NÃO tenha uma url
+				} else {
+					redirect('painel');
+				} // ./End of $redirTo != ''
+				
 				
 			//Login NOT OK
 			} else {

@@ -6,6 +6,8 @@ switch ($screen) {
 	case 'login':
 		
 		echo '<div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 ">';
+		//Imprimi o breadcrumb
+		echo breadcrumb();
 			echo form_open('usuarios/login', array('class'=>'form-group login-form' ));
 				echo '<fieldset>';
 					echo '<legend>Identificação</legend>';
@@ -22,6 +24,9 @@ switch ($screen) {
 						echo form_label('Senha');
 						echo form_password(array('name'=>'password','class'=>'form-control', 'placeholder'=>'Senha'));
 						
+						//Recebe a url em caso de redirecionamento
+						echo form_hidden('redirTo', $this->session->userdata('redirTo'));
+						
 						echo form_submit(array('name'=>'login', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Entrar');
 						//TODO: Melhorar espaçamento
 						echo '<p>' . anchor('usuarios/nova_senha', 'Esqueci minha senha') . '<p>';
@@ -36,6 +41,8 @@ switch ($screen) {
 	case 'nova_senha':
 	
 		echo '<div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3 ">';
+		//Imprimi o breadcrumb
+		echo breadcrumb();
 		echo form_open('usuarios/nova_senha', array('class'=>'form-group login-form' ));
 		echo '<fieldset>';
 		echo '<legend>Recuperação de Senha</legend>';
@@ -63,6 +70,8 @@ switch ($screen) {
 	case 'cadastrar':
 		
 		echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
+		//Imprimi o breadcrumb
+		echo breadcrumb();
 		echo form_open('usuarios/cadastrar', array('class'=>'form-group login-form' ));
 		echo '<fieldset>';
 		echo '<legend>Cadastrar novo Usuário</legend>';
@@ -104,7 +113,9 @@ switch ($screen) {
 			});
 		</script>
 		<div class="col-sm-12 col-md-12 col-lg-12 ">
-		<?php 
+		<?php
+		//Imprimi o breadcrumb
+		echo breadcrumb();
 			getMessage('msgOK');
 			getMessage('msgError');
 		?>
@@ -156,7 +167,9 @@ switch ($screen) {
 		} // ./End of $userIdSegment == NULL
 ?>
 		<div class="col-sm-12 col-md-12 col-lg-12 ">
-<?php	
+<?php
+		//Imprimi o breadcrumb
+		echo breadcrumb();	
 		
 		//Verifica se é Administrador ou o próprio usuario
 		if ($userIdSegment == $this->session->userdata('userId') || isadmin(TRUE)) {
@@ -224,6 +237,8 @@ switch ($screen) {
 			
 			//
 			echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
+			//Imprimi o breadcrumb
+			echo breadcrumb();
 			echo form_open(current_url(), array('class'=>'form-group login-form'));
 			echo '<fieldset>';
 			echo '<legend>Alterar Usuário</legend>';
