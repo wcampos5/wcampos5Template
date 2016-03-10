@@ -344,6 +344,62 @@ function breadcrumb() {
 
 
 
+/***********************************************************
+ * 
+ * 					AUDITORIA
+ * 
+ ***********************************************************/
+ //$query TRUE pega a ultima instrução executada
+function audit($op, $comment, $query=TRUE) {
+ 	//Carrega a instancia do CI
+	$CI =& get_instance();
+	
+	//Necessario carregar session?
+	
+	//Carrega o model auditoria e da um alias
+	$CI->load->model('audit_model', 'audit');
+	
+	//Se existe uma ultima query
+	if ($query){
+		$lastQuery = $CI->db->last_query();
+		//Caso não $query
+	} else {
+		$lastQuery = '';
+	} // ./End of $query
+	
+	
+	if (isLogged(FALSE)){
+		//Pega o usuario logado através do ID na sessao
+		$userId = $CI->session->userdata('userId');
+		$email = $CI->usuarios->getByUserId($userId)->row()->email;
+	//Caso não isLogged(FALSE)
+	} else {
+		$email = 'Desconhecido';
+	} // ./End of isLogged(FALSE)
+	
+
+	
+	
+	//Array com a informações a enviar
+	$data = array(
+			'email'=>$email,
+			'op'=>$op,
+			'query'=>$lastQuery,
+			'comment'=>$comment
+			
+	);
+	
+	//Envia ao BD
+	$CI->audit->doInsert($data);
+	
+	
+ }  /* End of function_audit */
+ 
+
+
+
+
+
 
 
 

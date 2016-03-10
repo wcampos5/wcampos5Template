@@ -24,11 +24,13 @@ class Usuarios_model extends CI_Model {
 			
 			//Verifica se realmente incluiu
 			if ($this->db->affected_rows() > 0){
+				audit('Inclusão no BD', 'Inclusão efetuada com sucesso');
 				//Envia mensagem de sucesso
 				setMessage('msgOK', 'Cadastro efetuado com sucesso!!!', 'success');
 			//Caso não $this->db->affected_rows() > 0
 			} else {
 				//Envia mensagem de erro
+				audit('Inclusão no BD', 'Tentativa de Inclusão sem sucesso');
 				setMessage('msgError', 'Cadastro naõ efetuado!!!', 'error');
 			} // ./End of $this->db->affected_rows() > 0
 			
@@ -48,14 +50,18 @@ class Usuarios_model extends CI_Model {
 			$this->db->update('users', $data, $condition);
 			
 			//Verifica se atualizou registro
-			if ($this->db->afected_rows() > 0){
+			if ($this->db->affected_rows() > 0){
+				audit('Alteração no BD', 'Alteração efetuada com sucesso');
 				setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
 			//Caso não $this->db->afected_rows() > 0
 			} else {
+				audit('Alteração no BD', 'Alteração sem sucesso');
 				setMessage('msgError', 'Erro ao tentar atualizar o registro', 'error');
 			} // ./End of $this->db->afected_rows() > 0
+			
+			audit('Alteração no BD', 'Alteração sem sucesso');
 			//Seta a msg de sucesso
-			setMessage('msgOK', 'Atualização efetuada com sucesso' . var_dump($data), 'success');
+			setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
 			if ($redir){
 				//Atualiza a pagina corrente
 				redirect(current_url());
@@ -72,9 +78,11 @@ class Usuarios_model extends CI_Model {
 			
 			//Verifica se realmente excluiu
 			if ($this->db->affected_rows() > 0){
+				audit('DELEÇÃO no BD', 'DELEÇÃO efetuada com sucesso');
 				setMessage('msgOK', "Registro excluido com sucesso!!!", 'success');
 			//Caso $this->db->affected_rows() <> 1
 			} else {
+				audit('TENTATIVA DELEÇAO no BD', 'DELEÇÃO não efetuada com sucesso');
 				setMessage('msgError', "Registro não pode ser excluido!!!", 'error');
 			} // ./End of $this->db->affected_rows() == 1
 			

@@ -66,6 +66,8 @@ class Usuarios extends CI_Controller {
 				
 				$this->session->set_userdata($data);
 				
+				audit('Login', 'Login Efetuado com sucesso');
+				
 				//Verifica se necessita redirecionar ou não
 				if ($redirTo != ''){
 					redirect($redirTo);
@@ -116,6 +118,7 @@ class Usuarios extends CI_Controller {
 	 */
 	public function logoff() {
 		//Defini o array dos dados que faram parte do unset
+		audit('Logout', 'Logout efetuado com sucesso');
 		$cleanSession = array('userId', 'email','name', 'userAdm', 'logged');
 		$this->session->unset_userdata($cleanSession);
 		
@@ -162,6 +165,8 @@ class Usuarios extends CI_Controller {
 					$this->usuarios->doUpdate($data, array('email'=>$email), FALSE);
 					//Defini a mensagem de retorno para o usuario
 					setMessage('msgOK', 'Nova senha enviada ao seu email', 'success');
+					//Auditoria
+					audit('Solicitação de senha', 'Usuario solicitou uma nova senha por email');
 					redirect('usuarios/nova_senha');
 				
 				} else {
