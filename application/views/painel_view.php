@@ -63,7 +63,14 @@
 				           
 				        </ul>
 				      </li>
-				      <li><a href="#">Page 2</a></li> 
+				      <li class="dropdown">
+				      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Auditoria
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				       		<li><?php echo anchor('auditoria/gerenciar', 'Gerenciar');?></li>
+				           
+				        </ul>
+				      </li>
 				      <li><a href="#">Page 3</a></li> 
 				    </ul>
 				  </div>

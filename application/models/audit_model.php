@@ -55,8 +55,12 @@ class Audit_model extends CI_Model {
 	 * Retorna todos os dados da tabela users
 	 * 
 	 */
-	public function getAll() {
-		return $this->db->get('audit');
+	public function getAll($limit=NULL) {
+		if ($limit > 0) {
+			$this->db->limit($limit);
+			return $this->db->get('audit');
+		} // ./End of $limit > 0
+		
 	}  /* End of function_getAll() */
 	
 } 
