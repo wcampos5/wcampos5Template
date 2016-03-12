@@ -100,7 +100,7 @@ switch ($screen) {
 		echo '</fieldset>';
 		echo form_close();
 		
-		break;
+	break;
 		
 	case 'gerenciar':
 ?>

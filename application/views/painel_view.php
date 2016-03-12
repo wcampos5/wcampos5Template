@@ -71,6 +71,15 @@
 				           
 				        </ul>
 				      </li>
+				      <li class="dropdown">
+				      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Midia
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				       		<li><?php echo anchor('midia/cadastrar', 'Cadastrar');?></li>
+				       		<li><?php echo anchor('midia/gerenciar', 'Gerenciar');?></li>
+				           
+				        </ul>
+				      </li>
 				      <li><a href="#">Page 3</a></li> 
 				    </ul>
 				  </div>
