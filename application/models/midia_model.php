@@ -56,6 +56,18 @@ class Midia_model extends CI_Model {
 		
 	}  /* End of function doUpload*/
 	
+	
+	/**
+	 * Function getAll()
+	 *
+	 * Retorna todos os dados da tabela midia
+	 *
+	 */
+	public function getAll() {
+		return $this->db->get('midia');
+	}  /* End of function_getAll() */
+	
+	
 } 
 
 /*   End of file midia_model.php  */

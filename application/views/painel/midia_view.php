@@ -44,6 +44,11 @@ switch ($screen) {
 					if (confirm("Deseja realmente excluir este registro?\nEsta operação não poderá ser desfeita!!!")) return true; else 
 						return false;
 				});
+
+				//
+				$('input').click(function(){
+					(this).select();
+				});
 			});
 		</script>
 		<div class="col-sm-12 col-md-12 col-lg-12 ">
@@ -53,39 +58,31 @@ switch ($screen) {
 			getMessage('msgOK');
 			getMessage('msgError');
 			
-			//Verifica se recebeu o numero de itens a exibir
-			$userIdSegment = $this->uri->segment(3);
-			
-			if ($userIdSegment == 'all') {
-				$limite = 0;
-			} else {
-				$limite = 5;
-			}// ./End of $totalToShow == NULL
-			
-			?>
-			<p>Mostrando os ultimos <?php echo ($limite == 5)? '5 ' : ' ';?> registros, para ver tudo <?php echo anchor('auditoria/gerenciar/all', 'Clique Aqui');?></p>
+		?>
 			<table class="table table-striped data-table">
 			  
 			  <thead>
 			  	<tr>
-			  		<th class="text-center">Usuário</th>
-			  		<th class="text-center">Data/Hora</th>
-			  		<th class="text-center">Ação</th>
-			  		<th class="text-center">Observação</th>
+			  		<th class="text-center">Nome</th>
+			  		<th class="text-center">Link</th>
+			  		<th class="text-center">Miniatura</th>
+			  		<th class="text-center">Ações</th>
 			  	</tr>
 			  </thead>
 			  
 			  <tbody>
 <?php 
-				$query = $this->audit->getAll('5')->result(); //Trás os dados da tabela
+				$query = $this->midia->getAll()->result(); //Trás os dados da tabela
 				
 				foreach ($query as $item){
 					echo '<tr>';
-						printf('<td>%s</td>', $item->email);
-						printf('<td>%s</td>', date('d/m/Y H:i:s', strtotime($item->date_time)));
-						printf('<td>%s</td>', '<span "data-toggle="tooltip" title="' . $item->query . '">' . $item->op . '</span>');
-						//printf('<td>%s</td>', $item->op);
-						printf('<td>%s</td>',$item->comment);
+						printf('<td>%s</td>', $item->name);
+						printf('<td><input type="text" value="%s" size="85" /></td>', base_url("uploads/$item->file"));
+						printf('<td>%s</td>', thumb($item->file));
+						printf('<td class="text-center">%s%s%s</td>', anchor("uploads/$item->file", ' ', array('class'=>'glyphicon glyphicon-search', 'title'=>'Visualizar', 'target'=>'_blank')) . nbs(4),
+								anchor("media/editar/$item->midiaId", ' ', array('class'=>'glyphicon glyphicon-edit', 'title'=>'Editar')). nbs(8),
+								anchor("usuarios/excluir/$item->midiaId", ' ', array('class'=>'confirmadelecao glyphicon glyphicon-trash', 'title'=>'Deletar')));
+						
 					echo '</tr>';
 				} // ./foreach $query
 				

@@ -396,6 +396,66 @@ function audit($op, $comment, $query=TRUE) {
  }  /* End of function_audit */
  
 
+ 
+/**
+ * Function thumb()
+ * 
+ * Gera as imagens thumbnails caso ainda não existam e armazena na pasta thumbs dentro de uploads
+ * 
+ * @param string $image
+ * @param number $width 
+ * @param number $height
+ * @param boolean $genTag
+ */
+function thumb($image=NULL, $width=100, $height=75, $genTag=TRUE) {
+ 	//Carrega a instancia do CI
+	$CI =& get_instance();
+	//Carrega o model auditoria e da um alias
+	$CI->load->helper('file');
+	
+	//Cria o placeholder para a imagem
+	$thumb = $width.'x'.$height.'_'.$image;	//Ex.: 100x75_imagem.png
+	$thumbInfo = get_file_info('./uploads/thumbs/'.$thumb);
+	
+	//Se existe o arquivo
+	if ($thumbInfo != FALSE){
+		//Retorna o link do arquivo
+		$retorno = base_url('uploads/thumbs/'.$thumb);
+	//Caso não $placeholderInfo != FALSE o arquivo ainda não existe
+	} else {
+		$CI->load->library('image_lib');
+		$config['image_library'] = 'gd2';
+		$config['source_image'] = './uploads/'. $image;
+		$config['new_image'] = './uploads/thumbs/'. $thumb;
+		$config['maintain_ratio'] = TRUE;
+		$config['width'] = $width;
+		$config['height'] = $height;
+		
+		$CI->image_lib->initialize($config);
+		//Se a imagem foi redimensionada
+		if ($CI->image_lib->resize()){
+			$CI->image_lib->clear();
+			$retorno = base_url('uploads/thumbs/'. $thumb);
+		//Caso imagem não tenha sido redimensionada
+		} else {
+			$retorno = FALSE;
+		} // ./End of $CI->image_lib->resize()
+		
+	} // ./End of $placeholderInfo != FALSE
+		
+		
+		if ($genTag == TRUE && $retorno != FALSE){
+			//$retorno = "Teste";
+			$retorno = '<img src="' .$retorno. '" alt="" /></img>';
+			return $retorno;
+		//Caso não condition
+		} // ./End of $genTag && $retorno != FALSE
+
+	
+	
+ }  /* End of function thumb */
+ 
+
 
 
 

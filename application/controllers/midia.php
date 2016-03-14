@@ -42,9 +42,13 @@ class Midia extends CI_Controller {
 	 */
 	public function cadastrar() {
 		
+		//carrega a library html
+		$this->load->helper('html');
+		
 		/* Valida os dados recebidos do formulario */
 		$this->form_validation->set_rules('name', 'NOME', 'trim|required|ucfirst');
 		$this->form_validation->set_rules('description', 'DESCRIÇÃO', 'trim');
+		
 		
 		if ($this->form_validation->run() == TRUE) {
 			
@@ -100,8 +104,8 @@ class Midia extends CI_Controller {
 		
 		
 		
-		setTheme('titulo', 'Gerenciamento de auditoria'); //Define o titulo da página em usuarios_view()
-		setTheme('conteudo', loadModule('auditoria_view', 'gerenciar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		setTheme('titulo', 'Gerenciamento de midias'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('midia_view', 'gerenciar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
 		//Carrega o módulo usuários e mostrar a tela de login
 		loadTemplate();
 		
