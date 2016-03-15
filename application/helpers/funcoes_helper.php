@@ -79,8 +79,7 @@ function initPanel() {
 	setTheme('jsInclude', loadJS(array('https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js',
 			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
 			'//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js'
-	),'',TRUE), FALSE);  /*Voltar ,
-			'//cdn.tinymce.com/4/tinymce.min.js' */
+	),'',TRUE), FALSE);
 	
 	setTheme('defaultTitle', 'Painel Administrativo');
 	setTheme('footer', '<p>XXX &copy; 2016 | Todos os direitos reservados.</p>');
@@ -455,6 +454,49 @@ function thumb($image=NULL, $width=100, $height=75, $genTag=TRUE) {
 	
  }  /* End of function thumb */
  
+ 
+ 
+ 
+ 
+/**
+ *	Function initHtmlEditor()
+ *
+ *	Função que inicializa o TinyMCE para a criação de textarea com o Editor html
+ *	
+ */
+ function initHtmlEditor() {
+ 	
+ 	//Inclui os JS remotos
+	setTheme('footer', loadJS(array('//cdn.tinymce.com/4/tinymce.min.js'),'',TRUE), FALSE);
+	//Inclui o JS Local
+	setTheme('footer', loadJS(base_url('assets/js/initTinyMCE.js'),'',TRUE), FALSE);
+	
+ }  /* End of function initHtmlEditor */
+ 
+ 
+ 
+ 
+ /**
+  *	Function includeFile()
+  *
+  *	Função que imprime ou retorna um arquivo
+  *
+  */
+function includeFile($view, $folder='includes', $toPrint=TRUE ) {
+	
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	
+	
+ 	if ($toPrint == TRUE) {
+ 		echo $CI->load->view("$folder/$view", '', TRUE);
+ 		return TRUE;
+ 	} // ./End of $toPrint == TRUE
+ 	
+ 	return $CI->load->view("$folder/$view", '', TRUE);
+ 	
+ 	
+ }  /* End of function includeFile() */
 
 
 

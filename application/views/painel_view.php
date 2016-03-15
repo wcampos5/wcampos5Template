@@ -80,7 +80,17 @@
 				           
 				        </ul>
 				      </li>
-				      <li><a href="#">Page 3</a></li> 
+				      </li>
+				      <li class="dropdown">
+				      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Páginas
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				       		<li><?php echo anchor('pagina/cadastrar', 'Cadastrar');?></li>
+				       		<li><?php echo anchor('pagina/gerenciar', 'Gerenciar');?></li>
+				           
+				        </ul>
+				      </li>
+				      <li><a href="#">New</a></li> 
 				    </ul>
 				  </div>
 				</nav> <!-- **** ./NavBar *** -->

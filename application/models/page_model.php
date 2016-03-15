@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Midia_model extends CI_Model {
+class Page_model extends CI_Model {
 
 	/*---------------------------------------------------------------------------
 	 *										Functions
@@ -10,18 +10,18 @@ class Midia_model extends CI_Model {
 	
 	public function doInsert($data=NULL, $redir=TRUE) {
 		if ($data != NULL) {
-			$this->db->insert('midia', $data);
+			$this->db->insert('pages', $data);
 				
 			//Verifica se realmente incluiu
 			if ($this->db->affected_rows() > 0){
-				audit('Inclusão de midia', 'Nova midia cadastrada');
+				audit('Inclusão de página', 'Nova página cadastrada');
 				//Envia mensagem de sucesso
 				setMessage('msgOK', 'Cadastro efetuado com sucesso!!!', 'success');
 				//Caso não $this->db->affected_rows() > 0
 			} else {
 				//Envia mensagem de erro
-				audit('Tentativa INCLUSÃO de MIDIA', 'Tentativa de Inclusão de midia sem sucesso');
-				setMessage('msgError', 'Cadastro  de midia naõ efetuado!!!', 'error');
+				audit('Tentativa INCLUSÃO de PÁGINA', 'Tentativa de Inclusão de midia sem sucesso');
+				setMessage('msgError', 'Cadastro  de página naõ efetuado!!!', 'error');
 			} // ./End of $this->db->affected_rows() > 0
 				
 				
@@ -40,18 +40,18 @@ class Midia_model extends CI_Model {
 	public function doUpdate($data=NULL, $condition=NULL, $redir=TRUE) {
 		if ($data != NULL && is_array($condition)) {
 			//Atualiza a tabela usuarios no BD
-			$this->db->update('midia', $data, $condition);
-				
+			$this->db->update('pages', $data, $condition);
+	
 			//Verifica se atualizou registro
 			if ($this->db->affected_rows() > 0){
-				audit('Alteração no BD', 'Alteração efetuada com sucesso');
+				audit('Alteração Página no BD', 'Alteração efetuada com sucesso');
 				setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
 				//Caso não $this->db->afected_rows() > 0
 			} else {
 				audit('Alteração no BD', 'Alteração sem sucesso');
 				setMessage('msgError', 'Erro ao tentar atualizar o registro', 'error');
 			} // ./End of $this->db->afected_rows() > 0
-				
+	
 			audit('Alteração no BD', 'Alteração sem sucesso');
 			//Seta a msg de sucesso
 			setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
@@ -62,6 +62,7 @@ class Midia_model extends CI_Model {
 		}
 	
 	}  /* End of function doUpdate() */
+	
 	
 	
 	

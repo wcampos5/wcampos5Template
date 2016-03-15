@@ -23,3 +23,8 @@ th.sorting_asc{
 th.sorting_desc{
 	background: url("assets/images/black_down.png") right center no-repeat !important;
 }
+
+/* Tiny MCE */
+.mceLayout{
+	margin-bottom: 20px !important;
+}
