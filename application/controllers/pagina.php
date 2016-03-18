@@ -42,33 +42,24 @@ class Pagina extends CI_Controller {
 	public function cadastrar() {
 		
 	
-		//carrega a library html
-		$this->load->helper('html');
-	
 		/* Valida os dados recebidos do formulario */
-		$this->form_validation->set_rules('name', 'NOME', 'trim|required|ucfirst');
-		$this->form_validation->set_rules('description', 'DESCRIÇÃO', 'trim');
-	
+		$this->form_validation->set_rules('title', 'TÍTULO', 'trim|required|ucfirst');
+		$this->form_validation->set_rules('slug', 'SLUG', 'trim');
+		$this->form_validation->set_rules('content', 'CONTEÚDO', 'trim|required|htmlentities');
 	
 		if ($this->form_validation->run() == TRUE) {
 				
-			//Primeiramente tenta fazer o upload do arquivo que veio do formulario
-			$upload = $this->midia->doUpload('file'); //doUpload do model midia_model
-				
-			if (is_array($upload) && $upload['file_name'] != ''){ //upload com sucesso
 				//Pega os dados vindos do formulario
-				$data = elements(array('name', 'description'), $this->input->post());
-				//Le a informação recebida da library do_upload acionada no model midia_model doUpload
-				$data['file'] = $upload['file_name'];
+				$data = elements(array('title', 'slug', 'content'), $this->input->post());
+				//Verifica se recebeu um slug ou nao
+				($data['slug'] != '') ? $data['slug'] = genSlug($data['slug'])  : $data['slug'] = genSlug($data['title']) ;
 	
 				//Insere no banco de dados
-				$this->midia->doInsert($data);
+				$this->page->doInsert($data);
 	
 				//Caso o upload não tenha ocorrido com sucesso
-			} else {
 				setMessage('msgError', $upload, 'error');
 				redirect(current_url());
-			} // ./End of condition
 				
 				
 				
@@ -100,14 +91,23 @@ class Pagina extends CI_Controller {
 	public function gerenciar() {
 	
 		$this->load->helper('html');
+		
+		//Inclui um arquivo CSS local
+		setTheme('cssInclude', loadCSS(array('//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css'),'','All',TRUE), FALSE);
+		
+		//Inclui os arquivos JS
+		//Inclui os JS remotos
+		setTheme('jsInclude', loadJS(array('https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js',
+				'//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js'
+		),'',TRUE), FALSE);
 	
 		//Carrega o data-table.js e o tabel.js
 		setTheme('jsInclude', loadJS('table.js', 'assets/js', FALSE),FALSE);
 	
 	
 	
-		setTheme('titulo', 'Gerenciamento de midias'); //Define o titulo da página em usuarios_view()
-		setTheme('conteudo', loadModule('midia_view', 'gerenciar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		setTheme('titulo', 'Gerenciamento de páginas'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('page_view', 'gerenciar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
 		//Carrega o módulo usuários e mostrar a tela de login
 		loadTemplate();
 	

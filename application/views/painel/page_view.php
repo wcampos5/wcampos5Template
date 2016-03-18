@@ -9,7 +9,7 @@ switch ($screen) {
 		echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
 		//Imprimi o breadcrumb
 		echo breadcrumb();
-		echo form_open('page/cadastrar', array('class'=>'form-group login-form' ));
+		echo form_open('pagina/cadastrar', array('class'=>'form-group login-form' ));
 		echo '<fieldset>';
 		echo '<legend>Cadastro de páginas</legend>';
 		//Mostra erros de validação, caso exista
@@ -45,10 +45,6 @@ switch ($screen) {
 						return false;
 				});
 
-				//
-				$('input').click(function(){
-					(this).select();
-				});
 			});
 		</script>
 		<div class="col-sm-12 col-md-12 col-lg-12 ">
@@ -63,25 +59,24 @@ switch ($screen) {
 			  
 			  <thead>
 			  	<tr>
-			  		<th class="text-center">Nome</th>
-			  		<th class="text-center">Link</th>
-			  		<th class="text-center">Miniatura</th>
+			  		<th class="text-center">Título</th>
+			  		<th class="text-center">Artigo</th>
+			  		<th class="text-center">Resumo</th>
 			  		<th class="text-center">Ações</th>
 			  	</tr>
 			  </thead>
 			  
 			  <tbody>
 <?php 
-				$query = $this->midia->getAll()->result(); //Trás os dados da tabela
+				$query = $this->page->getAll()->result(); //Trás os dados da tabela
 				
 				foreach ($query as $item){
 					echo '<tr>';
-						printf('<td>%s</td>', $item->name);
-						printf('<td><input type="text" value="%s" size="85" /></td>', base_url("uploads/$item->file"));
-						printf('<td>%s</td>', thumb($item->file));
-						printf('<td class="text-center">%s%s%s</td>', anchor("uploads/$item->file", ' ', array('class'=>'glyphicon glyphicon-search', 'title'=>'Visualizar', 'target'=>'_blank')) . nbs(4),
-								anchor("media/editar/$item->midiaId", ' ', array('class'=>'glyphicon glyphicon-edit', 'title'=>'Editar')). nbs(8),
-								anchor("usuarios/excluir/$item->midiaId", ' ', array('class'=>'confirmadelecao glyphicon glyphicon-trash', 'title'=>'Deletar')));
+						printf('<td>%s</td>', $item->title);
+						printf('<td>%s</td>', $item->slug);
+						printf('<td>%s</td>', postSummary($item->content));
+						printf('<td class="text-center">%s%s</td>', anchor("pagina/editar/$item->pageId", ' ', array('class'=>'glyphicon glyphicon-edit', 'title'=>'Editar')). nbs(8),
+								anchor("pagina/excluir/$item->pageId", ' ', array('class'=>'confirmadelecao glyphicon glyphicon-trash', 'title'=>'Deletar')));
 						
 					echo '</tr>';
 				} // ./foreach $query

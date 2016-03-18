@@ -497,6 +497,74 @@ function includeFile($view, $folder='includes', $toPrint=TRUE ) {
  	
  	
  }  /* End of function includeFile() */
+ 
+ 
+ 
+ /**
+  * Function genSlug()
+  * 
+  * Gera um slug baseado no titulo da pagina
+  * 
+  */
+ function genSlug($string=NULL) {
+ 	$string = removeAccent($string); //Remover acentos
+ 	return url_title($string, '-', TRUE); //TRUE para lower case
+ }  /* End of function genSlug() */
+ 
+ 
+/**
+ * Function removeAccent()
+ * @param String $string
+ */
+function removeAccent($string=NULL) {
+	$find = array(
+		'À', 'Á', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Õ', 'Ô', 'Ú', 'Ü', 'Ç', 'à', 'á', 'ã','â', 'é', 'ê', 'í', 'ó', 'õ', 'ô', 'ú', 'ü', 'ç' 
+			
+	);
+	
+	$replace = array(
+			'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'Ç', 'a', 'a', 'a','a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'ç'
+	);
+	
+	return str_replace($find, $replace, $string);
+	
+}  /* End of function remove accent() */
+
+
+/**
+ * Function postSummary
+ * 
+ * Retorna um resumo de uma pagina ou post configurando um numero especifico de palavras
+ * 
+ * @param String $string
+ * @param number $wordNumbers
+ * @param boolean $htmlDecode
+ * @param boolean $tagRemove
+ */
+function postSummary($string=NULL, $wordNumbers=50, $htmlDecode=TRUE, $tagRemove=TRUE) {
+	
+	if ($string != NULL){
+		
+		if ($htmlDecode) {
+			//Converte os caracteres HTML da string recebido
+			$string = html_entity_decode($string);
+		} // ./End of $htmlDecode = TRUE
+		
+		if ($tagRemove) {
+			$string = strip_tags($string);
+		} // ./End of $tagRemove
+		
+		$retorno = word_limiter($string, $wordNumbers);
+		
+	//Caso não $string != NULL
+	} else {
+		$retorno = FALSE;
+	} // ./End of $string != NULL
+	
+	return $retorno;
+	
+}  /* End of function_container */
+ 
 
 
 

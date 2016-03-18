@@ -97,7 +97,7 @@ class Page_model extends CI_Model {
 	 *
 	 */
 	public function getAll() {
-		return $this->db->get('midia');
+		return $this->db->get('pages');
 	}  /* End of function_getAll() */
 	
 	
