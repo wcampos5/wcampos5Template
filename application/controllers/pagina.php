@@ -36,7 +36,7 @@ class Pagina extends CI_Controller {
 	 *									Function cadastrar()
 	 ---------------------------------------------------------------------------*/
 	/*
-	 * - Adiciona midias
+	 * - Adiciona paginas
 	 *
 	 */
 	public function cadastrar() {
@@ -72,6 +72,43 @@ class Pagina extends CI_Controller {
 		initHtmlEditor();
 		setTheme('titulo', 'Cadastrar nova página'); //Define o titulo da página em usuarios_view()
 		setTheme('conteudo', loadModule('page_view', 'cadastrar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+	
+	}  /* End of function cadastrar() */
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function editar()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Adiciona paginas
+	 *
+	 */
+	public function editar() {
+	
+	
+		/* Valida os dados recebidos do formulario */
+		$this->form_validation->set_rules('title', 'TÍTULO', 'trim|required|ucfirst');
+		$this->form_validation->set_rules('slug', 'SLUG', 'trim');
+		$this->form_validation->set_rules('content', 'CONTEÚDO', 'trim|required|htmlentities');
+	
+		if ($this->form_validation->run() == TRUE) {
+	
+			//Pega os dados vindos do formulario
+			$data = elements(array('title', 'slug', 'content'), $this->input->post());
+			//Verifica se recebeu um slug ou nao
+			($data['slug'] != '') ? $data['slug'] = genSlug($data['slug'])  : $data['slug'] = genSlug($data['title']) ;
+	
+			//Insere no banco de dados
+			$this->page->doUpdate($data, array('id'=>$this->input->post('pageId')));	
+		}
+	
+		//Chama a função que inicializa o Tiny MCE
+		initHtmlEditor();
+		setTheme('titulo', 'Editar página'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('page_view', 'editar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
 		//Carrega o módulo usuários e mostrar a tela de login
 		loadTemplate();
 	

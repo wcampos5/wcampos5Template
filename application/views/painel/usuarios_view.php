@@ -158,10 +158,10 @@ switch ($screen) {
 		
 	case 'alterar_senha':
 		
-		$userIdSegment = $this->uri->segment(3);
+		$midiaIdSegment = $this->uri->segment(3);
 		
 		//Verifica se existe um usuario para trocar a senha
-		if ($userIdSegment == NULL) {
+		if ($midiaIdSegment == NULL) {
 			setMessage('msgError', 'Selecione um usuário para modificar', 'error');
 			redirect('usuarios/gerenciar');
 		} // ./End of $userIdSegment == NULL
@@ -172,8 +172,8 @@ switch ($screen) {
 		echo breadcrumb();	
 		
 		//Verifica se é Administrador ou o próprio usuario
-		if ($userIdSegment == $this->session->userdata('userId') || isadmin(TRUE)) {
-			$query = $this->usuarios->getByUserId($userIdSegment)->row();
+		if ($midiaIdSegment == $this->session->userdata('userId') || isadmin(TRUE)) {
+			$query = $this->usuarios->getByUserId($midiaIdSegment)->row();
 		} else {
 			redirect('usuarios/gerenciar');
 		}// ./Enf of isadmin() || $userIdSegment == $this->session->userdata('userId')
@@ -201,7 +201,7 @@ switch ($screen) {
 	
 		echo form_submit(array('name'=>'changePassword', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Alterar Senha');
 		echo anchor('usuarios/gerenciar', 'Cancelar', array('class'=>'btn btn-md btn-danger'));
-		echo form_hidden('userId', $userIdSegment);
+		echo form_hidden('userId', $midiaIdSegment);
 		
 		echo '</fieldset>';
 		echo form_close();
@@ -216,10 +216,10 @@ switch ($screen) {
 	
 	case 'editar':
 	
-		$userIdSegment = $this->uri->segment(3);
+		$midiaIdSegment = $this->uri->segment(3);
 	
 		//Verifica se existe um usuario para trocar a senha
-		if ($userIdSegment == NULL) {
+		if ($midiaIdSegment == NULL) {
 			setMessage('msgError', 'Selecione um usuário para modificar', 'error');
 			redirect('usuarios/gerenciar');
 		} // ./End of $userIdSegment == NULL
@@ -228,8 +228,8 @@ switch ($screen) {
 	<?php	
 			
 			//Verifica se é Administrador ou o próprio usuario
-			if ($userIdSegment == $this->session->userdata('userId') || isadmin()) {
-				$query = $this->usuarios->getByUserId($userIdSegment)->row();
+			if ($midiaIdSegment == $this->session->userdata('userId') || isadmin()) {
+				$query = $this->usuarios->getByUserId($midiaIdSegment)->row();
 			} else {
 				setMessage('msgError', 'Operação não permitida para este usuário', 'error');
 				redirect('usuarios/gerenciar');
@@ -258,7 +258,7 @@ switch ($screen) {
 		
 			echo form_submit(array('name'=>'editUser', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Editar Usuário');
 			echo anchor('usuarios/gerenciar', 'Cancelar | Voltar', array('class'=>'btn btn-md btn-danger'));
-			echo form_hidden('userId', $userIdSegment);
+			echo form_hidden('userId', $midiaIdSegment);
 			
 			echo '</fieldset>';
 			echo form_close();

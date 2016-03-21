@@ -545,12 +545,12 @@ function postSummary($string=NULL, $wordNumbers=50, $htmlDecode=TRUE, $tagRemove
 	
 	if ($string != NULL){
 		
-		if ($htmlDecode) {
+		if ($htmlDecode == TRUE) {
 			//Converte os caracteres HTML da string recebido
-			$string = html_entity_decode($string);
+			$string = toHtml($string);
 		} // ./End of $htmlDecode = TRUE
 		
-		if ($tagRemove) {
+		if ($tagRemove == TRUE) {
 			$string = strip_tags($string);
 		} // ./End of $tagRemove
 		
@@ -564,6 +564,20 @@ function postSummary($string=NULL, $wordNumbers=50, $htmlDecode=TRUE, $tagRemove
 	return $retorno;
 	
 }  /* End of function_container */
+
+
+
+/**
+ * Function toHtml()
+ * 
+ * Funcao que converte os dados vindos do BD com caracteres especiais de html
+ * @param unknown $string
+ * @return string
+ */
+function toHtml($string=NULL) {
+	$retorno = html_entity_decode($string);
+	return $retorno;
+}  /* End of finction to Html() */
  
 
 

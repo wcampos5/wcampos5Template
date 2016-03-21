@@ -89,6 +89,49 @@ class Midia_model extends CI_Model {
 	}  /* End of function doUpload*/
 	
 	
+	
+	
+	public function doDelete($condition=NULL, $redir=TRUE) {
+		if ($condition != NULL && is_array($condition)) {
+			//Executa a deleção
+			$this->db->delete('midia', $condition);
+	
+			//Verifica se realmente excluiu
+			if ($this->db->affected_rows() > 0){
+				audit('DELEÇÃO de midia no BD', 'DELEÇÃO da midia ' . $condition['midiaId'] . ' efetuada com sucesso');
+				setMessage('msgOK', "Registro excluido com sucesso!!!", 'success');
+				//Caso $this->db->affected_rows() <> 1
+			} else {
+				audit('TENTATIVA DELEÇAO no BD', 'DELEÇÃO da midia ' . $condition['midiaId'] . ' não efetuada com sucesso');
+				setMessage('msgError', "Registro não pode ser excluido!!!", 'error');
+			} // ./End of $this->db->affected_rows() == 1
+	
+	
+			if ($redir) {
+				redirect(current_url());
+			} // ./End of redir=TRUE
+	
+		} // ./End of condition exists and is an array
+	}  /* End of function doDelete() */
+	
+	
+	
+	
+	public function getById($id=NULL) {
+		if ($id != NULL){
+			/* Defini a clausila where */
+			$this->db->where('midiaId', $id);
+			$this->db->limit(1);
+	
+			return $this->db->get('midia');
+	
+	
+		} else {
+			return FALSE;
+		}
+	}  /* End of getById() */
+	
+	
 	/**
 	 * Function getAll()
 	 *

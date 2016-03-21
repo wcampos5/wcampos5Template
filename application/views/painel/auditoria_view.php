@@ -22,9 +22,9 @@ switch ($screen) {
 			getMessage('msgError');
 			
 			//Verifica se recebeu o numero de itens a exibir
-			$userIdSegment = $this->uri->segment(3);
+			$midiaIdSegment = $this->uri->segment(3);
 			
-			if ($userIdSegment == 'all') {
+			if ($midiaIdSegment == 'all') {
 				$limite = 0;
 			} else {
 				$limite = 5;

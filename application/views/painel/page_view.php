@@ -35,6 +35,75 @@ switch ($screen) {
 		echo form_close();
 	
 	break;
+	
+	
+	
+	case 'editar':
+	
+		$pageId = $this->uri->segment(3);
+	
+		//Verifica se existe uma pagina para trocar a senha
+		if ($pageId == NULL) {
+			setMessage('msgError', 'Selecione uma pagina para modificar', 'error');
+			redirect('pagina/gerenciar');
+		} // ./End of $userIdSegment == NULL
+		?>
+		<div class="col-sm-12 col-md-12 col-lg-12 ">
+		<?php	
+						
+		$query = $this->page->getById($pageId)->row();
+						
+						
+		//
+		echo '<div class="col-sm-12 col-sm-offset-0 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">';
+		//Imprimi o breadcrumb
+		echo breadcrumb();
+		echo form_open(current_url(), array('class'=>'form-group login-form' ));
+		echo '<fieldset>';
+		echo '<legend>Alterar página</legend>';
+		//Mostra erros de validação, caso exista
+		showFormErrors();
+		//Verifica se tem alguma mensagem flashdata setada
+		getMessage('msgOK');
+		getMessage('msgError');
+	
+	
+		echo form_label('Título');
+		echo form_input(array('name'=>'title', 'class'=>'form-control', 'placeholder'=>'Título da Página'), set_value('title', $query->title), 'autofocus');
+		echo form_label('Slug');
+		echo form_input(array('name'=>'slug', 'class'=>'form-control', 'placeholder'=>'Manter em branco caso não saiba  do que ser trata'), set_value('slug', $query->slug));
+		
+		//Dispara o modal através do botão
+		echo form_button('', 'Inserir Imagem', array(
+				'class="btn btn-info btn-lg" id="btnInsertImage"'
+		));
+		
+		
+		
+		
+		echo anchor('midia/cadastrar','Updaload de Imagens','class="btn btn-default btn-sm btn-secondary" target="_blank"');
+		echo "</p>";
+		
+		//Inclui o arquivo insertimg
+		includeFile('insertimg', 'includes', TRUE);
+		
+		echo form_label('Conteúdo');
+		echo form_textarea(array('name'=>'content', 'class'=>'form-control htmleditor','rows'=>20), set_value('content', toHtml($query->content), FALSE));
+		
+		echo anchor('page/gerenciar', 'Cancelar', array('class'=>'btn btn-md btn-danger'));
+		
+		echo form_submit(array('name'=>'editar', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Alterar página');
+		
+		echo form_hidden('pageID', $query->pageId);
+	
+		echo '</fieldset>';
+		echo form_close();
+							
+							echo '</div>';
+					
+							
+						
+	break;
 		
 	case 'gerenciar':
 ?>

@@ -90,6 +90,21 @@ class Page_model extends CI_Model {
 	}  /* End of function doUpload*/
 	
 	
+	public function getById($id=NULL) {
+		if ($id != NULL){
+			/* Defini a clausila where */
+			$this->db->where('pageId', $id);
+			$this->db->limit(1);
+	
+			return $this->db->get('pages');
+	
+	
+		} else {
+			return FALSE;
+		}
+	}  /* End of getById() */
+	
+	
 	/**
 	 * Function getAll()
 	 *
