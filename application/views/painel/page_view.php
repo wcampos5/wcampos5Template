@@ -90,11 +90,11 @@ switch ($screen) {
 		echo form_label('Conteúdo');
 		echo form_textarea(array('name'=>'content', 'class'=>'form-control htmleditor','rows'=>20), set_value('content', toHtml($query->content), FALSE));
 		
-		echo anchor('page/gerenciar', 'Cancelar', array('class'=>'btn btn-md btn-danger'));
+		echo anchor('pagina/gerenciar', 'Cancelar', array('class'=>'btn btn-md btn-danger'));
 		
 		echo form_submit(array('name'=>'editar', 'class'=>'bnt btn-primary btn-md pull-right btn-submit'), 'Alterar página');
 		
-		echo form_hidden('pageID', $query->pageId);
+		echo form_hidden('pageId', $query->pageId);
 	
 		echo '</fieldset>';
 		echo form_close();

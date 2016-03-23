@@ -1,7 +1,25 @@
-  <script>
+  <script type="text/javascript">
 $(document).ready(function(){
     $("#btnInsertImage").click(function(){
         $("#myModal").modal();
+    });
+
+    $('.buscarImagem').click(function(){
+		var destino = "<?php echo base_url('midia/getImages') ?>";
+		var dados = $(".buscarTexto").serialize();
+		$.ajax({
+			type: "POST",
+			url: destino,
+			data: dados,
+			success: function(retorno){
+				$('.retorno').html(retorno);
+			}
+		});
+    });
+
+    $(".limparImagem").click(function(){
+		$(".buscarTexto").val('');
+		$(".retorno").html('');
     });
 });
 </script>

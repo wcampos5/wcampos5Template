@@ -28,3 +28,12 @@ th.sorting_desc{
 .mceLayout{
 	margin-bottom: 20px !important;
 }
+
+/* Modal em Paginas */
+.retorno{
+	margin-top:10px;
+}
+
+.retorno img{
+	margin: 0, 5px, 5px, 0;
+}

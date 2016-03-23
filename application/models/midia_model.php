@@ -69,7 +69,7 @@ class Midia_model extends CI_Model {
 	
 	public function doUpload($field) {
 		$config['upload_path'] = './uploads/';
-		$config['allowed_types'] = 'gif|jpeg|png';
+		$config['allowed_types'] = 'gif|GIF|jpeg|JPEG|jpg|JPG|png|PNG';
 		
 		//Carrega a library que carrega arquivos e inclui a configuração
 		$this->load->library('upload', $config);

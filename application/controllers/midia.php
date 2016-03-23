@@ -208,6 +208,45 @@ class Midia extends CI_Controller {
 	}  /* End of function excluir() */
 	
 	
+	public function getImages() {
+		header('Content-Type: application/x-json; charset=utf-8');
+		//Recebe o dado do input type do modal na view paginas_view funcao editar
+		$this->db->like('name', $this->input->post('pesquisarImagem'));
+		
+		if ($this->input->post('pesquisarImagem') == '') {
+			$this->db->limit(10);
+		} // ./End of $this->input->post('pesquisarImagem') == ''
+		
+		$this->db->order_by('name', 'DESC');
+		//Não retorna todas as imagens por causa dos filtros aplicados acima
+		$query = $this->midia->getAll();
+		
+		$retorno = 'Nenhum resultado encontrado com base nesta pesquisa';
+		
+		if ($query->num_rows() > 0) {
+			$retorno = '';
+			$query = $query->result();
+			
+			foreach ($query as $item) {
+				$retorno .= '<a href="javascript:;" onclick="$(\'.htmleditor\').tinymce().execCommand(\'mceInsertContent\',false,\' <img src=' . base_url("uploads/$item->file").' />\'); return false;">';
+				//$retorno .= '<img src="' . thumb($item->file,300,180, FALSE) .'" class="retornoimg" alt="'. $item->name . '" title="Inserir Aqui" /></a>';
+				//Recebe a tag do thumbnail e converte para html
+				$thumbInfo = toHtml(thumb($item->file,100,100, TRUE ));
+				//str_replace usado para adicionar class, alt e title no lugar de alt="" retornado pela função thumb()
+				$retorno .= str_replace('alt=""', 'class="retornoimg" alt="'. $item->name . '" title="Clique aqui para inserir imagem"', $thumbInfo) . '</a>';
+				
+				
+			} // ./foreach
+			
+		
+		} // ./End of $query_num_rows() > 0
+		
+		echo json_encode($retorno);
+		
+		
+	}  /* End of function getImages() */
+	
+	
 	
 	
 }/*   End of file midia.php  */

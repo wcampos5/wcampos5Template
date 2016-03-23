@@ -102,7 +102,7 @@ class Pagina extends CI_Controller {
 			($data['slug'] != '') ? $data['slug'] = genSlug($data['slug'])  : $data['slug'] = genSlug($data['title']) ;
 	
 			//Insere no banco de dados
-			$this->page->doUpdate($data, array('id'=>$this->input->post('pageId')));	
+			$this->page->doUpdate($data, array('pageId'=>$this->input->post('pageId')));	
 		}
 	
 		//Chama a função que inicializa o Tiny MCE

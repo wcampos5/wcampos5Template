@@ -467,9 +467,10 @@ function thumb($image=NULL, $width=100, $height=75, $genTag=TRUE) {
  function initHtmlEditor() {
  	
  	//Inclui os JS remotos
-	setTheme('footer', loadJS(array('//cdn.tinymce.com/4/tinymce.min.js'),'',TRUE), FALSE);
+	setTheme('jsInclude', loadJS(array('//cdn.tinymce.com/4/tinymce.min.js'),'',TRUE), FALSE);
 	//Inclui o JS Local
-	setTheme('footer', loadJS(base_url('assets/js/initTinyMCE.js'),'',TRUE), FALSE);
+	setTheme('jsInclude', loadJS(base_url('assets/js/initTinyMCE.js'),'',TRUE), FALSE);
+	setTheme('jsInclude', loadJS('jquery.tinymce.min.js','assets/tinyMCE/js/tinymce/', FALSE), FALSE);
 	
  }  /* End of function initHtmlEditor */
  
