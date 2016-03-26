@@ -31,6 +31,8 @@ class Painel extends CI_Controller {
 			loadTemplate();
 			
 		} else {
+			//Informa o motivo do redirecionamento
+			setMessage('loginNotOK', 'Acesso RESTRITO, favor efetuar o login', 'error');
 			redirect('usuarios/login');
 		}
 		

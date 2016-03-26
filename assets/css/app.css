@@ -13,3 +13,27 @@
 .alert p{
 	margin: 0px !important;
 }
+
+/* Tabelas */
+
+th.sorting_asc{
+	background: url("assets/images/black_up.png") right center no-repeat !important;
+}
+
+th.sorting_desc{
+	background: url("assets/images/black_down.png") right center no-repeat !important;
+}
+
+/* Tiny MCE */
+.mceLayout{
+	margin-bottom: 20px !important;
+}
+
+/* Modal em Paginas */
+.retorno{
+	margin-top:10px;
+}
+
+.retorno img{
+	margin: 0, 5px, 5px, 0;
+}

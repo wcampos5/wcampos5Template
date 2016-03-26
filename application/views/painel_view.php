@@ -29,13 +29,13 @@
 					
 					<div class="col-lg-4">
 						<p class="pull-right">
-							Bem vindo <strong><?php $this->session->userdata('name'); ?></strong>!
+							Bem vindo <strong><?php echo $this->session->userdata('name'); ?></strong>!
 						</p>
 						
 						<p class="pull-right">
 							<?php
 							//Altercao de senha
-							echo anchor('usuarios/nova_senha/' . $this->session->userdata('userId'), 'Alterar Senha', 'class="btn btn-primary"'); 
+							echo anchor('usuarios/alterar_senha/' . $this->session->userdata('userId'), 'Alterar Senha', 'class="btn btn-primary"'); 
 							//Logoff
 							echo anchor('usuarios/logoff', 'Sair', 'class="btn btn-danger"');
 							?>
@@ -63,8 +63,34 @@
 				           
 				        </ul>
 				      </li>
-				      <li><a href="#">Page 2</a></li> 
-				      <li><a href="#">Page 3</a></li> 
+				      <li class="dropdown">
+				      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Auditoria
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				       		<li><?php echo anchor('auditoria/gerenciar', 'Gerenciar');?></li>
+				           
+				        </ul>
+				      </li>
+				      <li class="dropdown">
+				      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Midia
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				       		<li><?php echo anchor('midia/cadastrar', 'Cadastrar');?></li>
+				       		<li><?php echo anchor('midia/gerenciar', 'Gerenciar');?></li>
+				           
+				        </ul>
+				      </li>
+				      </li>
+				      <li class="dropdown">
+				      	<a class="dropdown-toggle" data-toggle="dropdown" href="#">Páginas
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				       		<li><?php echo anchor('pagina/cadastrar', 'Cadastrar');?></li>
+				       		<li><?php echo anchor('pagina/gerenciar', 'Gerenciar');?></li>
+				           
+				        </ul>
+				      </li>
+				      <li><a href="#">New</a></li> 
 				    </ul>
 				  </div>
 				</nav> <!-- **** ./NavBar *** -->
@@ -73,6 +99,8 @@
 			<?php } ?>
 		
 			<div class="row">
+			
+			
 			
 				{conteudo}
 				

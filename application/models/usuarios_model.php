@@ -18,10 +18,48 @@ class Usuarios_model extends CI_Model {
 	 *										Functions
 	 ---------------------------------------------------------------------------*/
 	
+	public function doInsert($data=NULL, $redir=TRUE) {
+		if ($data != NULL) {
+			$this->db->insert('users', $data);
+			
+			//Verifica se realmente incluiu
+			if ($this->db->affected_rows() > 0){
+				audit('Inclusão no BD', 'Inclusão efetuada com sucesso');
+				//Envia mensagem de sucesso
+				setMessage('msgOK', 'Cadastro efetuado com sucesso!!!', 'success');
+			//Caso não $this->db->affected_rows() > 0
+			} else {
+				//Envia mensagem de erro
+				audit('Inclusão no BD', 'Tentativa de Inclusão sem sucesso');
+				setMessage('msgError', 'Cadastro naõ efetuado!!!', 'error');
+			} // ./End of $this->db->affected_rows() > 0
+			
+			
+			if ($redir){
+				//Atualiza a pagina corrente
+				redirect(current_url());
+			}
+			
+		} // ./End of has $data
+	
+	}  /* End of function doUpdate() */
+	
 	public function doUpdate($data=NULL, $condition=NULL, $redir=TRUE) {
 		if ($data != NULL && is_array($condition)) {
 			//Atualiza a tabela usuarios no BD
 			$this->db->update('users', $data, $condition);
+			
+			//Verifica se atualizou registro
+			if ($this->db->affected_rows() > 0){
+				audit('Alteração no BD', 'Alteração efetuada com sucesso');
+				setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
+			//Caso não $this->db->afected_rows() > 0
+			} else {
+				audit('Alteração no BD', 'Alteração sem sucesso');
+				setMessage('msgError', 'Erro ao tentar atualizar o registro', 'error');
+			} // ./End of $this->db->afected_rows() > 0
+			
+			audit('Alteração no BD', 'Alteração sem sucesso');
 			//Seta a msg de sucesso
 			setMessage('msgOK', 'Atualização efetuada com sucesso', 'success');
 			if ($redir){
@@ -31,6 +69,32 @@ class Usuarios_model extends CI_Model {
 		}
 		
 	}  /* End of function doUpdate() */
+	
+	
+	public function doDelete($condition=NULL, $redir=TRUE) {
+		if ($condition != NULL && is_array($condition)) {
+			//Executa a deleção
+			$this->db->delete('users', $condition);
+			
+			//Verifica se realmente excluiu
+			if ($this->db->affected_rows() > 0){
+				audit('DELEÇÃO no BD', 'DELEÇÃO efetuada com sucesso');
+				setMessage('msgOK', "Registro excluido com sucesso!!!", 'success');
+			//Caso $this->db->affected_rows() <> 1
+			} else {
+				audit('TENTATIVA DELEÇAO no BD', 'DELEÇÃO não efetuada com sucesso');
+				setMessage('msgError', "Registro não pode ser excluido!!!", 'error');
+			} // ./End of $this->db->affected_rows() == 1
+			
+			
+			if ($redir) {
+				redirect(current_url());
+			} // ./End of redir=TRUE
+			
+		} // ./End of condition exists and is an array
+	}  /* End of function doDelete() */
+	
+	
 	
 	/**
 	 * Function doLogin()
@@ -80,6 +144,35 @@ class Usuarios_model extends CI_Model {
 			return FALSE;
 		}
 	}  /* End of getByEmail() */
+	
+	
+	
+	public function getByUserId($id=NULL) {
+		if ($id != NULL){
+			/* Defini a clausila where */
+			$this->db->where('userId', $id);
+			$this->db->limit(1);
+				
+			return $this->db->get('users');
+				
+	
+		} else {
+			return FALSE;
+		}
+	}  /* End of getByUserId() */
+	
+	
+	
+	
+	/**
+	 * Function getAll()
+	 *
+	 * Retorna todos os dados da tabela users
+	 * 
+	 */
+	public function getAll() {
+		return $this->db->get('users');
+	}  /* End of function_getAll() */
 	
 } 
 

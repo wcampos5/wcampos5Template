@@ -17,7 +17,7 @@ class Usuarios extends CI_Controller {
 	//*** FUNCTIONS ***
 	
 	function index() {
-		$this->load->view('TBD');
+		$this->gerenciar();
 	
 	} /* End of TBD */
 	
@@ -42,6 +42,8 @@ class Usuarios extends CI_Controller {
 			//Recebe e converte para MD5SUM
 			$password = md5($this->input->post('password', TRUE));
 			
+			$redirTo = $this->input->post('redirTo', TRUE);
+			
 			/*Chama a função doLogin do Model Usuarios passando usuario e senha
 			 * caso o usuario exista, senha seja correta e ele esteja ativo retorna TRUE
 			 */
@@ -64,7 +66,16 @@ class Usuarios extends CI_Controller {
 				
 				$this->session->set_userdata($data);
 				
-				redirect('painel');
+				audit('Login', 'Login Efetuado com sucesso');
+				
+				//Verifica se necessita redirecionar ou não
+				if ($redirTo != ''){
+					redirect($redirTo);
+				//Caso $redirTo NÃO tenha uma url
+				} else {
+					redirect('painel');
+				} // ./End of $redirTo != ''
+				
 				
 			//Login NOT OK
 			} else {
@@ -75,7 +86,7 @@ class Usuarios extends CI_Controller {
 					setMessage('loginNotOK', 'Desculpe usuário e(ou) senha inválido(a). Tente novamente!'); //Usuario não existe
 				} elseif ($query->password != $password) {
 					setMessage('loginNotOK', 'Desculpe usuário e(ou) senha inválido(a). Tente novamente!'); //Senha invádlida
-				} elseif ($query->active == 0) {
+				} elseif ($query->active == FALSE) {
 					setMessage('loginNotOK', 'Desculpe este usuario esta temporariamente inativo, contate o administrador.'); //Usuario inativo
 				} else {
 					setMessage('loginNotOK', 'Infelizmente ocorreu um erro desconhecido, contate o administrador!'); //Outros erros
@@ -107,6 +118,7 @@ class Usuarios extends CI_Controller {
 	 */
 	public function logoff() {
 		//Defini o array dos dados que faram parte do unset
+		audit('Logout', 'Logout efetuado com sucesso');
 		$cleanSession = array('userId', 'email','name', 'userAdm', 'logged');
 		$this->session->unset_userdata($cleanSession);
 		
@@ -120,7 +132,7 @@ class Usuarios extends CI_Controller {
 	
 	
 	/*---------------------------------------------------------------------------
-	 *									Function nava_senha()
+	 *									Function nova_senha()
 	 ---------------------------------------------------------------------------*/
 	/*
 	 * - Enviar nova senha ao usuario
@@ -153,6 +165,8 @@ class Usuarios extends CI_Controller {
 					$this->usuarios->doUpdate($data, array('email'=>$email), FALSE);
 					//Defini a mensagem de retorno para o usuario
 					setMessage('msgOK', 'Nova senha enviada ao seu email', 'success');
+					//Auditoria
+					audit('Solicitação de senha', 'Usuario solicitou uma nova senha por email');
 					redirect('usuarios/nova_senha');
 				
 				} else {
@@ -179,6 +193,228 @@ class Usuarios extends CI_Controller {
 		loadTemplate();
 		
 	}  /* End of function nova_senha() */
+	
+	
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function cadastrar()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Cadastra novos usuario
+	 *
+	 */
+	public function cadastrar() {
+		
+		//Verifica se está logado
+		isLogged();	
+		
+		//Customiza as mensagens dos campos dos formularios
+		$this->form_validation->set_message('is_unique', 'Este %s já esta cadastrado no sistema');
+		$this->form_validation->set_message('matches', 'O campo %s está diferente do campos %s');
+		
+		/* Valida os dados recebidos do formulario */
+		$this->form_validation->set_rules('name', 'NOME', 'trim|required|ucwords');
+		$this->form_validation->set_rules('email', 'USUÁRIO', 'trim|required|valid_email|is_unique[users.email]|strtolower');
+		$this->form_validation->set_rules('password', 'SENHA', 'trim|required|min_length[4]|strtolower');
+		$this->form_validation->set_rules('password_repeat', 'REPITA A SENHA', 'trim|required|min_length[4]|strtolower|matches[password]');
+
+		if ($this->form_validation->run() == TRUE) {
+			$data = elements(array('name', 'email'), $this->input->post());
+			//Criptografa a senha
+			$data['password'] = md5($this->input->post('password'));
+			//Se for administrador permite criar usuario com poderes administrativos
+			if (isAdmin()) {
+				if ($data['adm'] = $this->input->post('adm') == 1) {
+					$data['adm'] = 1;
+				} else {
+					$data['adm'] = 0;
+				}
+			//Caso não seja administrador
+			} else {
+				$data['adm'] = 0;
+			}
+			
+			//Insere no banco de dados
+			$this->usuarios->doInsert($data);
+		}		
+		
+		setTheme('titulo', 'Cadastro de Usuários'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'cadastrar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+	}  /* End of Function cadastrar() */
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function gerenciar()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Listagem de usuarios usando JQuery Data Tables
+	 *
+	 */
+	public function gerenciar() {
+		
+		//Verifica se esta logado
+		isLogged();
+		
+		$this->load->helper('html');
+		
+		//Carrega o data-table.js e o tabel.js
+		setTheme('jsInclude', loadJS('table.js', 'assets/js', FALSE),FALSE);
+		
+		
+		
+		setTheme('titulo', 'Gerenciamento de usuários'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'gerenciar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+		
+	}  /* End of function_gerenciar */
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function alterar_senha()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Altera a senha do usuario
+	 *
+	 */
+	public function alterar_senha() {
+	
+		//Verifica se esta logado
+		isLogged();
+		
+		//Valida form
+		$this->form_validation->set_message('matches', 'O campo %s está diferente do campos %s');
+		
+		$this->form_validation->set_rules('password', 'SENHA', 'trim|required|min_length[4]|strtolower');
+		$this->form_validation->set_rules('password_repeat', 'REPITA A SENHA', 'trim|required|min_length[4]|strtolower|matches[password]');
+		
+		if ($this->form_validation->run() == TRUE) {
+			//Recebe a senha
+			$data['password'] = md5($this->input->post('password'));
+			
+			//Altera a senha no BD
+			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')));
+		}
+	
+		setTheme('titulo', 'Alterar Senha'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'alterar_senha')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+	
+	}  /* End of function alterar_senha */
+	
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function editar()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Permite a edição de alguns dados do usuario
+	 *
+	 */
+	public function editar() {
+	
+		//Verifica se esta logado
+		isLogged();
+		
+		/* Valida os dados recebidos do formulario */
+		$this->form_validation->set_rules('name', 'NOME', 'trim|required|ucwords');
+		
+		//Se passar pela validação
+		if ($this->form_validation->run() == TRUE) {
+			//O nome
+			$data['name'] = $this->input->post('name', TRUE);
+			
+			//Somente um administrador pode criar outro ou Inativar um usuario
+			if (isAdmin(TRUE) == TRUE){
+				$data['active'] = ($this->input->post('active') == 1) ? 1 : 0;
+			}
+			
+			if (isAdmin(TRUE) == TRUE){
+				$data['adm'] = ($this->input->post('adm') == 1) ? 1 : 0;
+			}
+			
+			
+			//Altera a senha no BD
+			$this->usuarios->doUpdate($data, array('userId'=>$this->input->post('userId')), TRUE);
+		}
+		
+	
+		setTheme('titulo', 'Atualização de Usuario'); //Define o titulo da página em usuarios_view()
+		setTheme('conteudo', loadModule('usuarios_view', 'editar')); //Passa o conteudo da view usuarios_view->login via parse na tag conteudo no painel_view
+		//Carrega o módulo usuários e mostrar a tela de login
+		loadTemplate();
+	
+	}  /* End of function editar */
+	
+	
+	
+	/*---------------------------------------------------------------------------
+	 *									Function excluir()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Permite a exclusão de um usuario
+	 *
+	 */
+	public function excluir() {
+	
+		//Verifica se esta logado
+		isLogged();
+	
+		//Verifica se é administrador
+		if (isAdmin(TRUE) == TRUE){
+			
+			//Recebe o userId no 3o segmento da URI
+			$userIdSegment = $this->uri->segment(3);
+			
+			//Caso o 3o segmento exista
+			if ($userIdSegment != NULL){
+				
+				//Retorna a linha correspondente do banco de dados
+				$query = $this->usuarios->getByUserId($userIdSegment);
+				
+				//Se retornar uma linha
+				if ($query->num_rows() == 1){
+					
+					$query = $query->row();
+					
+					
+					//Verifica se o usuario em questão não é um administrador
+					if ($query->adm != '1'){
+						//Executa a deleção
+						$this->usuarios->doDelete(array('userId'=>$userIdSegment), FALSE);
+					//Caso não $query->adm != '1'
+					} else {
+						setMessage('msgError', 'Usuário não pode ser excluido!!!', 'error');
+					} // ./End of $query->adm != '1'
+					
+				//Caso não $query->num_rows() <> 1
+				} else {
+					setMessage('msgError', 'Usuário Inexisente', 'error');
+				} // ./End of $query->num_rows() == 1
+				
+			//Caso $userIdSegment == NULL
+			} else {
+				setMessage('msgError', 'Selecione um usuário para deletar', 'error');
+			
+			} // ./End of $userIdSegment != NULL
+			
+			redirect('usuarios/gerenciar');
+			
+		} else {
+			redirect('usuarios/gerenciar');
+		}// ./End of isAdmin(TRUE)
+	
+	}  /* End of function editar */
+	
+	
+	
 	
 	
 	

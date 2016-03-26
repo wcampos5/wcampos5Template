@@ -78,8 +78,7 @@ function initPanel() {
 	//Inclui os JS remotos
 	setTheme('jsInclude', loadJS(array('https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js',
 			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
-			'//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js',
-			'//cdn.tinymce.com/4/tinymce.min.js'
+			'//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js'
 	),'',TRUE), FALSE);
 	
 	setTheme('defaultTitle', 'Painel Administrativo');
@@ -224,6 +223,10 @@ function isLogged($redir=TRUE) {
 		$_SESSION['logged'] = FALSE;
 		
 		if ($redir) {
+			//Verifica de onde veio a solicitação
+			$CI->session->set_userdata(array('redirTo'=>current_url()));
+			//Informa o motivo do redirecionamento
+			setMessage('loginNotOK', 'Acesso RESTRITO, favor efetuar o login', 'error');
 			redirect('usuarios/login');
 		} else {
 			return FALSE;
@@ -233,6 +236,28 @@ function isLogged($redir=TRUE) {
 	}
 	
 }  /* End of isLogged */
+
+function isAdmin($sendMessage=FALSE) {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	
+	//recebe o usuario da sessão
+	$userAdmin = $CI->session->userdata('userAdm');
+	
+	//Verifica se o usuario não esta instanciado ou não é administrador
+	if (!isset($userAdmin) || $userAdmin != TRUE){
+		//Verifica se é para retornar mensagem
+		if ($sendMessage) {
+			setMessage('msgError', 'Operação não permitida para este usuário', 'error');
+			return FALSE;
+		}
+	
+	} else {
+		
+		return TRUE;
+	
+	}
+}  /* End of function isAdmin */
 
 
 /*
@@ -280,6 +305,283 @@ function getMessage($msgId, $print=TRUE) {
 		return FALSE;
 	}
 }  /* End of getMessage */
+
+
+/*
+ * Gera um breadcrumb baseado no Controller atual
+ */
+function breadcrumb() {
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	$CI->load->helper('url'); //Carrega o helper url;
+	
+	//Recebe a classe (Controller) atual
+	$currentClass = ucfirst($CI->router->class); //Informa qual é a class atualemnte rodando no sistema
+	
+	if ($currentClass == 'Painel'){
+		$currentClass = anchor($CI->router->class, 'Inicio');
+	//Caso não condition
+	} else {
+		$currentClass = anchor($CI->router->class, $currentClass);
+	} // ./End of condition
+	
+	
+	//Recebe o metodo em questão
+	$currentMethod = ucwords(str_replace('_', ' ', $CI->router->method));
+	
+	if ($currentMethod && $currentMethod != 'Index'){
+		$currentMethod = " &raquo; " . anchor($CI->router->class . "/" . $CI->router->method, $currentMethod);
+	//Caso não $currentMethod && $currentMethod != 'Index'
+	} else {
+		$currentMethod = '';
+	} // ./End of $currentMethod && $currentMethod != 'Index'
+	
+	return '<p>Sua localização:' . anchor('painel', 'Painel') . ' &raquo ' . $currentClass . $currentMethod . '</p>';
+	
+	
+}  /* End of function breadcrumb */
+
+
+
+/***********************************************************
+ * 
+ * 					AUDITORIA
+ * 
+ ***********************************************************/
+ //$query TRUE pega a ultima instrução executada
+function audit($op, $comment, $query=TRUE) {
+ 	//Carrega a instancia do CI
+	$CI =& get_instance();
+	
+	//Necessario carregar session?
+	
+	//Carrega o model auditoria e da um alias
+	$CI->load->model('audit_model', 'audit');
+	
+	//Se existe uma ultima query
+	if ($query){
+		$lastQuery = $CI->db->last_query();
+		//Caso não $query
+	} else {
+		$lastQuery = '';
+	} // ./End of $query
+	
+	
+	if (isLogged(FALSE)){
+		//Pega o usuario logado através do ID na sessao
+		$userId = $CI->session->userdata('userId');
+		$email = $CI->usuarios->getByUserId($userId)->row()->email;
+	//Caso não isLogged(FALSE)
+	} else {
+		$email = 'Desconhecido';
+	} // ./End of isLogged(FALSE)
+	
+
+	
+	
+	//Array com a informações a enviar
+	$data = array(
+			'email'=>$email,
+			'op'=>$op,
+			'query'=>$lastQuery,
+			'comment'=>$comment
+			
+	);
+	
+	//Envia ao BD
+	$CI->audit->doInsert($data);
+	
+	
+ }  /* End of function_audit */
+ 
+
+ 
+/**
+ * Function thumb()
+ * 
+ * Gera as imagens thumbnails caso ainda não existam e armazena na pasta thumbs dentro de uploads
+ * 
+ * @param string $image
+ * @param number $width 
+ * @param number $height
+ * @param boolean $genTag
+ */
+function thumb($image=NULL, $width=100, $height=75, $genTag=TRUE) {
+ 	//Carrega a instancia do CI
+	$CI =& get_instance();
+	//Carrega o model auditoria e da um alias
+	$CI->load->helper('file');
+	
+	//Cria o placeholder para a imagem
+	$thumb = $width.'x'.$height.'_'.$image;	//Ex.: 100x75_imagem.png
+	$thumbInfo = get_file_info('./uploads/thumbs/'.$thumb);
+	
+	//Se existe o arquivo
+	if ($thumbInfo != FALSE){
+		//Retorna o link do arquivo
+		$retorno = base_url('uploads/thumbs/'.$thumb);
+	//Caso não $placeholderInfo != FALSE o arquivo ainda não existe
+	} else {
+		$CI->load->library('image_lib');
+		$config['image_library'] = 'gd2';
+		$config['source_image'] = './uploads/'. $image;
+		$config['new_image'] = './uploads/thumbs/'. $thumb;
+		$config['maintain_ratio'] = TRUE;
+		$config['width'] = $width;
+		$config['height'] = $height;
+		
+		$CI->image_lib->initialize($config);
+		//Se a imagem foi redimensionada
+		if ($CI->image_lib->resize()){
+			$CI->image_lib->clear();
+			$retorno = base_url('uploads/thumbs/'. $thumb);
+		//Caso imagem não tenha sido redimensionada
+		} else {
+			$retorno = FALSE;
+		} // ./End of $CI->image_lib->resize()
+		
+	} // ./End of $placeholderInfo != FALSE
+		
+		
+		if ($genTag == TRUE && $retorno != FALSE){
+			//$retorno = "Teste";
+			$retorno = '<img src="' .$retorno. '" alt="" /></img>';
+			return $retorno;
+		//Caso não condition
+		} // ./End of $genTag && $retorno != FALSE
+
+	
+	
+ }  /* End of function thumb */
+ 
+ 
+ 
+ 
+ 
+/**
+ *	Function initHtmlEditor()
+ *
+ *	Função que inicializa o TinyMCE para a criação de textarea com o Editor html
+ *	
+ */
+ function initHtmlEditor() {
+ 	
+ 	//Inclui os JS remotos
+	setTheme('jsInclude', loadJS(array('//cdn.tinymce.com/4/tinymce.min.js'),'',TRUE), FALSE);
+	//Inclui o JS Local
+	setTheme('jsInclude', loadJS(base_url('assets/js/initTinyMCE.js'),'',TRUE), FALSE);
+	setTheme('jsInclude', loadJS('jquery.tinymce.min.js','assets/tinyMCE/js/tinymce/', FALSE), FALSE);
+	
+ }  /* End of function initHtmlEditor */
+ 
+ 
+ 
+ 
+ /**
+  *	Function includeFile()
+  *
+  *	Função que imprime ou retorna um arquivo
+  *
+  */
+function includeFile($view, $folder='includes', $toPrint=TRUE ) {
+	
+	//Carrega a instancia do CI
+	$CI =& get_instance();
+	
+	
+ 	if ($toPrint == TRUE) {
+ 		echo $CI->load->view("$folder/$view", '', TRUE);
+ 		return TRUE;
+ 	} // ./End of $toPrint == TRUE
+ 	
+ 	return $CI->load->view("$folder/$view", '', TRUE);
+ 	
+ 	
+ }  /* End of function includeFile() */
+ 
+ 
+ 
+ /**
+  * Function genSlug()
+  * 
+  * Gera um slug baseado no titulo da pagina
+  * 
+  */
+ function genSlug($string=NULL) {
+ 	$string = removeAccent($string); //Remover acentos
+ 	return url_title($string, '-', TRUE); //TRUE para lower case
+ }  /* End of function genSlug() */
+ 
+ 
+/**
+ * Function removeAccent()
+ * @param String $string
+ */
+function removeAccent($string=NULL) {
+	$find = array(
+		'À', 'Á', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Õ', 'Ô', 'Ú', 'Ü', 'Ç', 'à', 'á', 'ã','â', 'é', 'ê', 'í', 'ó', 'õ', 'ô', 'ú', 'ü', 'ç' 
+			
+	);
+	
+	$replace = array(
+			'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'Ç', 'a', 'a', 'a','a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'ç'
+	);
+	
+	return str_replace($find, $replace, $string);
+	
+}  /* End of function remove accent() */
+
+
+/**
+ * Function postSummary
+ * 
+ * Retorna um resumo de uma pagina ou post configurando um numero especifico de palavras
+ * 
+ * @param String $string
+ * @param number $wordNumbers
+ * @param boolean $htmlDecode
+ * @param boolean $tagRemove
+ */
+function postSummary($string=NULL, $wordNumbers=50, $htmlDecode=TRUE, $tagRemove=TRUE) {
+	
+	if ($string != NULL){
+		
+		if ($htmlDecode == TRUE) {
+			//Converte os caracteres HTML da string recebido
+			$string = toHtml($string);
+		} // ./End of $htmlDecode = TRUE
+		
+		if ($tagRemove == TRUE) {
+			$string = strip_tags($string);
+		} // ./End of $tagRemove
+		
+		$retorno = word_limiter($string, $wordNumbers);
+		
+	//Caso não $string != NULL
+	} else {
+		$retorno = FALSE;
+	} // ./End of $string != NULL
+	
+	return $retorno;
+	
+}  /* End of function_container */
+
+
+
+/**
+ * Function toHtml()
+ * 
+ * Funcao que converte os dados vindos do BD com caracteres especiais de html
+ * @param unknown $string
+ * @return string
+ */
+function toHtml($string=NULL) {
+	$retorno = html_entity_decode($string);
+	return $retorno;
+}  /* End of finction to Html() */
+ 
+
+
 
 
 
