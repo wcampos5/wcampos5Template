@@ -28,7 +28,7 @@ class Midia extends CI_Controller {
 	function index() {
 		$this->gerenciar();
 	
-	} /* End of TBD */
+	} /* End of index */
 	
 	
 	

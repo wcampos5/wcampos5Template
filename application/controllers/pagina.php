@@ -152,6 +152,51 @@ class Pagina extends CI_Controller {
 	
 	
 	
+	/*---------------------------------------------------------------------------
+	 *									Function excluir()
+	 ---------------------------------------------------------------------------*/
+	/*
+	 * - Permite a exclusão de uma pagina
+	 *
+	 */
+	public function excluir() {
+	
+	
+		
+	
+			//Recebe o userId no 3o segmento da URI
+			$pageId = $this->uri->segment(3);
+	
+			//Caso o 3o segmento exista
+			if ($pageId != NULL){
+	
+				//Retorna a linha correspondente do banco de dados
+				$query = $this->page->getById($pageId);
+	
+				//Se retornar uma linha
+				if ($query->num_rows() == 1){
+	
+					$query = $query->row();
+	
+					$this->page->doDelete(array('pageId'=>$pageId), FALSE);
+	
+					//Caso não $query->num_rows() <> 1
+				} else {
+					setMessage('msgError', 'Página Inexistente', 'error');
+				} // ./End of $query->num_rows() == 1
+	
+				//Caso $userIdSegment == NULL
+			} else {
+				setMessage('msgError', 'Selecione uma página para deletar', 'error');
+					
+			} // ./End of $userIdSegment != NULL
+	
+			redirect('pagina/gerenciar');
+	
+	}  /* End of function excluir() */
+	
+	
+	
 	
 } /*   End of file page.php  */
 /*   Location: ./application/controllers/page.php  */

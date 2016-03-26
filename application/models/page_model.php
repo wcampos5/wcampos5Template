@@ -65,6 +65,31 @@ class Page_model extends CI_Model {
 	
 	
 	
+	public function doDelete($condition=NULL, $redir=TRUE) {
+		if ($condition != NULL && is_array($condition)) {
+			//Executa a deleção
+			$this->db->delete('pages', $condition);
+	
+			//Verifica se realmente excluiu
+			if ($this->db->affected_rows() > 0){
+				audit('DELEÇÃO de pagina no BD', 'DELEÇÃO de página ' . $condition['pageId'] . ' efetuada com sucesso');
+				setMessage('msgOK', "Página excluida com sucesso!!!", 'success');
+				//Caso $this->db->affected_rows() <> 1
+			} else {
+				audit('TENTATIVA DELEÇAO  de PÁGINA BD', 'DELEÇÃO de PÁGINA ' . $condition['pageId'] . ' não efetuada com sucesso');
+				setMessage('msgError', "Página não pode ser excluida!!!", 'error');
+			} // ./End of $this->db->affected_rows() == 1
+	
+	
+			if ($redir) {
+				redirect(current_url());
+			} // ./End of redir=TRUE
+	
+		} // ./End of condition exists and is an array
+	}  /* End of function doDelete() */
+	
+	
+	
 	
 	
 	
